@@ -2,11 +2,14 @@ name := """jugreactive"""
 
 version := "1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
-// Change this to another test framework if you prefer
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+lazy val akkaVersion = "2.4.2"
 
-// Uncomment to use Akka
-//libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.11"
 
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion
+)
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
