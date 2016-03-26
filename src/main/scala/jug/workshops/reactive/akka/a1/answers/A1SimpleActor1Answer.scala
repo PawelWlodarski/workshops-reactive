@@ -46,6 +46,7 @@ object A1SimpleActor1Answer {
     calcActor ! (1,2) //calc (1+2) = 3
     calcActor ! (4,3) //calc (4+3) = 7
 
+    system.terminate()
   }
 
 

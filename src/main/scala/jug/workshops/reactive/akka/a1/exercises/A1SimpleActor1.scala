@@ -32,19 +32,21 @@ object A1SimpleActor1 {
     simpleActorInstance ! 69
 
     //EXERCISES
-//    waitPrint("\nexercise 1 'isEven'")
+//    waitPrint("\nprimary exercise 1 'isEven'")
 //    simpleActorInstance ! 40 //40 is even = true
 //    simpleActorInstance ! 41 //41 is even = false
 //
 //
-//    waitPrint("\nexercise 2 'calculator'")
+//    waitPrint("\nadditional exercise 2 'calculator'")
 //    simpleActorInstance ! (1,2) //result = 3
 //    simpleActorInstance ! (4,3) //result = 7
 //
-//    waitPrint("\nexercise 3 'dedicated calculator'")
+//    waitPrint("\nadditional exercise 3 'dedicated calculator'")
+//    lazy val calcActor=???
 //    calcActor ! (1,2) //calc (1+2) = 3
 //    calcActor ! (4,3) //calc (4+3) = 7
 
+    system.terminate()
   }
 
 
