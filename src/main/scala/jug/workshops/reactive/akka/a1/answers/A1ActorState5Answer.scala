@@ -31,6 +31,8 @@ object A1ActorState5 {
     //EXERCISE
     TimeUnit.SECONDS.sleep(1)
     receiver ! "show_messages"
+
+    system.terminate()
     Await.result(system.whenTerminated, Duration.Inf)
   }
 

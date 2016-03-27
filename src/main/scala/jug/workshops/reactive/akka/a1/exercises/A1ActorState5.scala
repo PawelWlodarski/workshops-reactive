@@ -35,7 +35,8 @@ object A1ActorState5 {
     // 4 - wait random time in forwarders before rsending message
 //    comment/uncomment this line :TimeUnit.SECONDS.sleep(1)
 //    receiver ! "show_messages"
-    Await.result(system.whenTerminated, Duration.Inf)
+    system.terminate()
+    Await.result(system.whenTerminated, Duration(2,TimeUnit.SECONDS))
   }
 
 }
