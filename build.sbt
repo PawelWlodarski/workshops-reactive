@@ -10,8 +10,8 @@ val akka="com.typesafe.akka" %% "akka-actor" % akkaVersion
 val akkaTest="com.typesafe.akka" %% "akka-testkit" % akkaVersion
 val akkaStream="com.typesafe.akka" %% "akka-stream" % "2.4.10"
 val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % "2.4.10" % "test"
+val akkaTyped="com.typesafe.akka" % "akka-typed-experimental_2.11" % "2.4.11"
 
-
-libraryDependencies ++= Seq(akka,akkaTest,akkaStream,akkaStreamsTest)
+libraryDependencies ++= Seq(akka,akkaTest,akkaStream,akkaStreamsTest,akkaTyped)
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
