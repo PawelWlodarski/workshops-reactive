@@ -1,19 +1,17 @@
-package jug.workshops.reactive.patterns.pipesandfilters.answers
+package jug.workshops.reactive.patterns.pipesandfilters.exercises
 
 import akka.actor.ActorSystem
 import akka.testkit.TestKit
 import common.StopSystemAfterAll
 import org.scalatest.{MustMatchers, WordSpecLike}
 
-import scala.concurrent.duration.FiniteDuration
-
 /**
   * Created by pawel on 01.10.16.
   */
-class PipeStandardTest extends TestKit(ActorSystem("testsystem"))
+class PipeStandardExercisesTest extends TestKit(ActorSystem("testsystem"))
   with WordSpecLike with MustMatchers with StopSystemAfterAll {
 
-  import jug.workshops.reactive.patterns.pipesandfilters.answers.PipeStandardAnswer._
+  import jug.workshops.reactive.patterns.pipesandfilters.exercises.PipeStandardExercise._
 
   "Pipes and filters" should {
 
