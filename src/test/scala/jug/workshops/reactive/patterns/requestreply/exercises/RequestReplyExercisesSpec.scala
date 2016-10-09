@@ -1,17 +1,17 @@
-package jug.workshops.reactive.patterns.requestreply.answers
+package jug.workshops.reactive.patterns.requestreply.exercises
 
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import common.StopSystemAfterAll
-import jug.workshops.reactive.patterns.requestreply.answers.SimpleNode.{Response, SquareRoot, Sum}
+import jug.workshops.reactive.patterns.requestreply.exercises.SimpleNode._
 import org.scalatest.{MustMatchers, WordSpecLike}
 
 /**
   * Created by pawel on 09.10.16.
   */
-class RequestReplyAnswerSpec extends TestKit(ActorSystem("testingRequestReply")) with WordSpecLike
+class RequestReplyExercisesSpec extends TestKit(ActorSystem("testingRequestReply")) with WordSpecLike
   with MustMatchers with ImplicitSender with StopSystemAfterAll{
 
   "Request-Reply" should {

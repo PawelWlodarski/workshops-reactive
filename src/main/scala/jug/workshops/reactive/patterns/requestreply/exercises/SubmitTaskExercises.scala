@@ -1,10 +1,10 @@
-package jug.workshops.reactive.patterns.requestreply.answers
+package jug.workshops.reactive.patterns.requestreply.exercises
 
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import jug.workshops.reactive.patterns.requestreply.answers.DelegateNode.DelegatedTask
-import jug.workshops.reactive.patterns.requestreply.answers.SimpleNode._
+import jug.workshops.reactive.patterns.requestreply.exercises.DelegateNode._
+import jug.workshops.reactive.patterns.requestreply.exercises.SimpleNode._
 
 import scala.collection.immutable.Queue
 
@@ -19,7 +19,7 @@ object SubmitTaskAnswer {
     val simpleNode=system.actorOf(Props[SimpleNode],"simpleNode") //EXERCISE 1
     val delegateNode=system.actorOf(Props[DelegateNode],"delegateNode")  //EXERCISE 2
     val poolNode=system.actorOf(Props(new PoolNode(poolSize = 3)),"poolNode")  //EXERCISE 3
-    val client=system.actorOf(Props(new Client(poolNode)),"client")
+    val client=system.actorOf(Props(new Client(simpleNode)),"client")
 
     client ! "START"
 
@@ -51,8 +51,7 @@ class SimpleNode extends Actor{
   import SimpleNode._
 
   override def receive: Receive = {
-    case SquareRoot(number) => sender ! Response(Math.sqrt(number))
-    case Sum(numbers) => sender ! Response(numbers.sum)
+    ???
   }
 }
 
@@ -74,7 +73,7 @@ class DelegateNode extends Actor{
   override def receive: Receive = {
     case task : Task =>
       val child=context.actorOf(Props[PerRequestWorker],generateChildName)
-      child ! DelegatedTask(sender,task)
+      child ! DelegatedTask(???,???)  // replace ??? with proper values in delegated task
       println(s"delegated ${task} to ${child.path}")
   }
 
@@ -89,10 +88,10 @@ class PerRequestWorker extends Actor {
   override def receive: Receive = {
     case DelegatedTask(replyTo,SquareRoot(number)) =>
       latency
-      replyTo ! Response(Math.sqrt(number))
+      ??? // handle message properly
     case DelegatedTask(replyTo,Sum(numbers)) =>
       latency
-      replyTo ! Response(numbers.sum)
+      ??? // handle message , send response to proper actor
   }
 
   def latency={
@@ -127,20 +126,19 @@ class PoolNode(poolSize:Int) extends Actor {
 
   override def receive: Receive = {
     case task : Task =>
-      val (worker,newPool) = pool.dequeue
-      pool=newPool
-      worker ! DelegatedTask(sender,task)
+      //1) pool is immutable , dequeue returns (element,newPool)
+      //2) Send delegated taks to worker
+      ???
       if(pool.isEmpty) become(poolEmpty)
   }
 
   def poolEmpty:Receive={
-    case ComputationFinished(worker) if(tasks.nonEmpty)=>
-      worker ! tasks.dequeue
-    case ComputationFinished(worker) => pool=
-      pool enqueue worker
-      unbecome()
-    case task:Task =>
-      tasks enqueue DelegatedTask(sender,task)
+    //handle 3 cases
+    // 1)Worker finished computation and there are new tasks on queue
+    // 2) worker finished computation and there are no new tasks
+    // 3) new task is send
+
+    ???
   }
 }
 
@@ -148,14 +146,13 @@ class PoolWorker extends Actor{
   import PoolNode._
 
   override def receive: Receive = {
+    //In all cases you need to send reponse to client and notify server that worker is ready for new task
     case DelegatedTask(replyTo,SquareRoot(number)) =>
       latency
-      replyTo ! Response(Math.sqrt(number))
-      sender ! ComputationFinished(self)
+      ???
     case DelegatedTask(replyTo,Sum(numbers)) =>
       latency
-      replyTo ! Response(numbers.sum)
-      sender ! ComputationFinished(self)
+      ???
     case msg => throw new RuntimeException(s"unhandled message $msg")
   }
 
