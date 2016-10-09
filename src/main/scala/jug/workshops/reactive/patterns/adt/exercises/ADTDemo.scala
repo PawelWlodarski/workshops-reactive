@@ -14,7 +14,7 @@ object ADTDemo {
   def main(args: Array[String]): Unit = {
     val system=ActorSystem("ADT")
 
-    val actor=system.actorOf(Props[ActorInterface])
+    val actor=system.actorOf(Props[ActorInterface],"adtInterface")
 
     actor ! Variant2(1,"test")
 
