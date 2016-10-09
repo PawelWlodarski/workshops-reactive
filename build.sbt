@@ -15,3 +15,6 @@ val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % "2.4.10" % "t
 libraryDependencies ++= Seq(akka,akkaTest,akkaStream,akkaStreamsTest)
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+
+
+//scalacOptions in ThisBuild ++= Seq("-Xfatal-warnings","-unchecked", "-deprecation")
