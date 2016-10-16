@@ -59,7 +59,7 @@ class SynchronousTestingExercise extends TestKit(ActorSystem("TestingBrowser"))
       browser ? RequestForHistory
 
       //then
-      val Success(history) = ???
+      val history:Seq[Url] = ???
 
       history must  contain allOf(url1,url2,url3)
     }
