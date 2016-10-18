@@ -1,6 +1,6 @@
 package jug.workshops.reactive.akka.a1.exercises
 
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import common.StopSystemAfterAll
 import org.scalatest.{MustMatchers, WordSpecLike}
@@ -52,7 +52,7 @@ class A1SimpleActor1SpecExercise extends TestKit(ActorSystem("SimpleActor")) wit
   "Multiplying calculator" should {
     "multiply elements of received tuple : (i1,i2) => i1*i2" in {
       //given
-      val calc = system.actorOf(Props[MultiplyingCalculator])
+      val calc:ActorRef = ???
 
       //when
       calc ! (3, 5)
@@ -73,7 +73,7 @@ class SimpleActorForTestingAnswer extends Actor {
       println("sending message two to sender")
       sender ! "in actor : received two"
     case i: Int => ???
-    case ??? => ??? ///match on tuple (Int,Int)
+//    case ??? => ??? ///match on tuple (Int,Int)
     case msg => println(s"in actor : received unknown message : [value=$msg, type=${msg.getClass} ]")
   }
 }

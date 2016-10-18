@@ -3,7 +3,7 @@ package jug.workshops.reactive.akka.a1.exercises
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
 /**
   * Created by pawel on 26.03.16.
@@ -15,7 +15,8 @@ object A1SimpleActor1 {
     //what is actorSystem and why we use Props to create actors in factory method instead of simple "new"
     val system=ActorSystem("workshops")
     val actorProperties = Props[SimpleActor]
-    val simpleActorInstance = system.actorOf(actorProperties)
+    //what is actor Ref??
+    val simpleActorInstance: ActorRef = system.actorOf(actorProperties)
 
     //HANDS ON :uncomment first match in 'SimpleActor'
     println("different scala syntax - the same result")
