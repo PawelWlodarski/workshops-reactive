@@ -8,7 +8,7 @@ import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 /**
   * Created by pawel on 26.03.16.
   */
-object A1SimpleActor1 {
+object BasicsPart1SimpleActor1 {
 
 
   def main(args: Array[String]) {
