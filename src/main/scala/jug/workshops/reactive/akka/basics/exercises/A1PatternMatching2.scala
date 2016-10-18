@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.a1.exercises
+package jug.workshops.reactive.akka.basics.exercises
 
 /**
   * Created by pawel on 26.03.16.

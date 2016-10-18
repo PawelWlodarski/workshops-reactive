@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.a1.answers
+package jug.workshops.reactive.akka.basics.answers
 
 import java.util.concurrent.TimeUnit
 
@@ -7,7 +7,7 @@ import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 /**
   * Created by pawel on 27.03.16.
   */
-import jug.workshops.reactive.akka.a1.answers.PingPongProtocol._
+import jug.workshops.reactive.akka.basics.answers.PingPongProtocol._
 object A1PingPong {
 
   def main(args: Array[String]) {

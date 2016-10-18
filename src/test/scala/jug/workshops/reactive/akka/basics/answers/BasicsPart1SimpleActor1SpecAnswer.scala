@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.a1.answers
+package jug.workshops.reactive.akka.basics.answers
 
 import akka.actor.{Actor, ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}

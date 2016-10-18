@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.a1.answers
+package jug.workshops.reactive.akka.basics.exercises
 
 /**
   * Created by pawel on 26.03.16.
@@ -31,29 +31,25 @@ object A1PartialFunctions4 {
     println("partial head Pattern Matching List(1,2,3) : " + partialHeadPM(List(1,2,3)))
 
     //EXERCISE
-    println("\nEXERCISE PARTIAL FUNCTIONS CALCULATOR")
-    lazy val add:PartialFunction[(Int,Int,String),Int] = {
-      case (a,b,"+") => a+b
-    }
-
-    lazy val mult:PartialFunction[(Int,Int,String),Int] = {
-      case (a,b,"*") => a*b
-    }
-
-
-    lazy val calc=add orElse mult
-    println(calc(1,2,"+")==3)
-    println(calc(6,2,"*")==12)
-    println(calc((6,3,"*"))==18)
-
-    println("\nADDITIONAL EXERCISE - STATE ENCAPSULATION")
-    import ObjectWithState._
-    val encapsulatedState=new ObjectWithState()
-    encapsulatedState.receive(Add(2))
-    encapsulatedState.receive(Add(3))
-    encapsulatedState.receive(PrintState)
-    encapsulatedState.receive(Mult(6))
-    encapsulatedState.receive(PrintState)
+//    println("\nEXERCISE PARTIAL FUNCTIONS CALCULATOR")
+//    lazy val add:PartialFunction[(Int,Int,String),Int] = ???
+//
+//    lazy val mult:PartialFunction[(Int,Int,String),Int] = ???
+//
+//
+//    lazy val calc=add orElse mult
+//    println(calc(1,2,"+")==3)
+//    println(calc(6,2,"*")==12)
+//    println(calc((6,3,"*"))==18)
+//
+//    println("\nADDITIONAL EXERCISE - STATE ENCAPSULATION")
+//    import ObjectWithState._
+//    val encapsulatedState=new ObjectWithState()
+//    encapsulatedState.receive(Add(2))
+//    encapsulatedState.receive(Add(3))
+//    encapsulatedState.receive(PrintState)
+//    encapsulatedState.receive(Mult(6))
+//    encapsulatedState.receive(PrintState)
   }
 
 }
@@ -70,12 +66,11 @@ class ObjectWithState{
 
   private var state:Int=0
 
-  val receive:Receive={
-    case Add(n) => state = state + n
-    case Mult(n) => state = state * n
-    case PrintState => println(s"state in object : $state")
-  }
+  val receive:Receive = ???
 }
+
+
+
 
 
 /*

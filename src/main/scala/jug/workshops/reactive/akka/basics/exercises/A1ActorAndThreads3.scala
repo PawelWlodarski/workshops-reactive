@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.a1.exercises
+package jug.workshops.reactive.akka.basics.exercises
 
 import java.util.concurrent.TimeUnit
 
