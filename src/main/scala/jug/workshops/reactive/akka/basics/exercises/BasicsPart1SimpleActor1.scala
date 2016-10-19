@@ -34,6 +34,7 @@ object BasicsPart1SimpleActor1 {
     simpleActorInstance ! "unknown"
 
     //HANDS ON : ad hoc implementation for different types
+    //!! : SHOW THAT ACTOR RUNS IN A DIFFERENT THREAD!
     waitPrint("\ndifferent type")
     simpleActorInstance ! 69
     simpleActorInstance ! new Date()
@@ -45,6 +46,7 @@ object BasicsPart1SimpleActor1 {
   }
 
 
+  //!! : SHOW THAT ACTOR RUNS IN A DIFFERENT THREAD!
   class SimpleActor extends Actor{
     override def receive: Receive = {
 //      case "one" => println("in actor : received one")
