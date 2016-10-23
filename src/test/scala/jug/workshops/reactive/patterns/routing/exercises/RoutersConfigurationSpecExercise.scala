@@ -7,9 +7,6 @@ import common.StopSystemAfterAll
 import jug.workshops.reactive.patterns.routing.exercises.RoutersConfigurationExercise._
 import org.scalatest.{MustMatchers, WordSpecLike}
 
-/**
-  * Created by pawel on 23.10.16.
-  */
 class RoutersConfigurationSpecAnswer extends TestKit(RoutersConfiguration.testSystem) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender {
 
