@@ -3,7 +3,7 @@ package jug.workshops.reactive.patterns.routing
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, ActorSystem, Props}
-import akka.routing.{FromConfig, RandomGroup, RoundRobinGroup, RoundRobinPool}
+import akka.routing.{FromConfig, RandomGroup, RoundRobinPool}
 import com.typesafe.config.ConfigFactory
 
 /**
@@ -13,7 +13,7 @@ object RoutersDemo {
 
   def main(args: Array[String]): Unit = {
     //CUSTOM CONFIG
-    val demoConfig = ConfigFactory.load("demo")
+    val demoConfig = ConfigFactory.load("routers/demo")
     val system=ActorSystem("routers",demoConfig)
 
     //GROUP WORKERS
@@ -29,7 +29,6 @@ object RoutersDemo {
 
     TimeUnit.MILLISECONDS.sleep(500)
     system.terminate()
-
   }
 
 
@@ -46,6 +45,7 @@ object RoutersDemo {
     )
 
     //TEST DIFFERENT ROUTERS
+    //Routers does not change sender
     override def receive: Receive = {
       case work => router1 ! work
 //      case work => router2 ! work
@@ -71,10 +71,8 @@ object RoutersDemo {
       }
     }
 
-
     override def receive: Receive = {
       case msg =>
     }
   }
-
 }
