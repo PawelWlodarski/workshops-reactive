@@ -17,4 +17,6 @@ libraryDependencies ++= Seq(akka,akkaTest,akkaStream,akkaStreamsTest,akkaTyped)
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 
 
+parallelExecution in Test := false
+
 //scalacOptions in ThisBuild ++= Seq("-Xfatal-warnings","-unchecked", "-deprecation")
