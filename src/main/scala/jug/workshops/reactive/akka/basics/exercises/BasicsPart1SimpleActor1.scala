@@ -41,7 +41,7 @@ object BasicsPart1SimpleActor1 {
     simpleActorInstance ! List(1,2,3,4,5)
     simpleActorInstance ! (1,2)  //explain tuple for exercises
 
-
+    //explain tests in exercises
     system.terminate()
   }
 

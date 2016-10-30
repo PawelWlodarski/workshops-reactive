@@ -8,7 +8,7 @@ import org.scalatest.{MustMatchers, WordSpecLike}
 /**
   * Created by pawel on 18.10.16.
   */
-class A1SimpleActor1SpecAnswer extends TestKit(ActorSystem("SimpleActor")) with WordSpecLike
+class BasicsPart1SimpleActorSpecAnswer extends TestKit(ActorSystem("SimpleActor")) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender {
 
   "SimpleActorForTestingAnswer" should {

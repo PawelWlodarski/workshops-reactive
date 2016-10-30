@@ -20,16 +20,12 @@ object A1ActorAndThreads3 {
 
 
     //EXERCISE
-//    waitPrint("\nEXERCISE - Thread Info")
-//    import ExerciseActor._
-//    val exerciseActor=system.actorOf(Props[ExerciseActor])
-//    exerciseActor ! ThreadId  // should display actor's thread Id
-//    exerciseActor ! ThreadName // should display actor's thread name
-//    exerciseActor ! ThreadGroup // should display actor's thread group
-//
-//
-//    waitPrint("\nADDITIONAL EXERCISE - matching list")
-//    exerciseActor ! List(ThreadId,ThreadName) // should display both actor's thread Id and thread name
+    // * explain companion object
+    // * how to send response to sender
+    // * how to send message to self
+    //*  how to forward message to retain a sender
+    // * potential trap with Object pattern matching
+    // * how to run single test in intellij
 
     system.terminate()
   }
@@ -44,19 +40,8 @@ object A1ActorAndThreads3 {
 
 class DemonstrationActor extends Actor{
   override def receive: Receive = {
+    case "TO_SELF" => {println("sending message to self");self ! "MESSAGE_TO_SELF"}
+    case "MESSAGE_TO_SELF" => println("received message from SELF")
     case _ => println(s"actors' thread : ${Thread.currentThread()}")
   }
-}
-
-
-object ExerciseActor{
-  case class ThreadId()
-  case class ThreadName()
-  case class ThreadGroup()
-}
-
-class ExerciseActor extends Actor{
-  import ExerciseActor._
-
-  override def receive: Actor.Receive = ???
 }
