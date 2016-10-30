@@ -15,7 +15,7 @@ object A1ActorAndThreads3 {
     val demoActor=system.actorOf(Props[DemonstrationActor])
 
     println("DEMONSTRATION ACTOR THREAD")
-    println(s"main thread  : ${Thread.currentThread()}")
+    println(s"main thread  : ${Thread.currentThread().getName} : ${Thread.currentThread().getId}")
     demoActor ! "anyMessage"
 
 
@@ -42,6 +42,6 @@ class DemonstrationActor extends Actor{
   override def receive: Receive = {
     case "TO_SELF" => {println("sending message to self");self ! "MESSAGE_TO_SELF"}
     case "MESSAGE_TO_SELF" => println("received message from SELF")
-    case _ => println(s"actors' thread : ${Thread.currentThread()}")
+    case _ => println(s"actors' thread : ${Thread.currentThread().getName} : ${Thread.currentThread().getId}")
   }
 }
