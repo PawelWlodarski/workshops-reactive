@@ -8,7 +8,7 @@ import akka.actor.{Actor, Props, ActorSystem}
 /**
   * Created by pawel on 26.03.16.
   */
-object A1ActorAndThreads3 {
+object BasicsPart3ThreadsAndActors {
 
   def main(args: Array[String]) {
     val system=ActorSystem("Exercise3")
