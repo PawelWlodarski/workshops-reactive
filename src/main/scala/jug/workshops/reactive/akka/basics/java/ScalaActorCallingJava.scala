@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.a1.java
+package jug.workshops.reactive.akka.basics.java
 
 import akka.actor.{Props, ActorSystem}
 
