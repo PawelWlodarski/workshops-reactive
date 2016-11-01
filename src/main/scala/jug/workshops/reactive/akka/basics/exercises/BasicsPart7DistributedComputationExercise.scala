@@ -3,7 +3,7 @@ package jug.workshops.reactive.akka.basics.exercises
 import akka.actor.{Actor, ActorRef}
 
 
-object BasicsPart7MapReduceExercise {
+object BasicsPart7DistributedComputationExercise {
 
   import JobDivisionProtocol._
 
@@ -20,7 +20,7 @@ object BasicsPart7MapReduceExercise {
   object ProcessingLogic {
     //compute sum in most convenient way
     //check if it easier to test logic outside actors
-    def computation(start: Long, end: Long) = ???
+    def computation(start: Long, end: Long):BigDecimal = ???
   }
 
   class TaskProcessor(combiner: ActorRef) extends Actor {

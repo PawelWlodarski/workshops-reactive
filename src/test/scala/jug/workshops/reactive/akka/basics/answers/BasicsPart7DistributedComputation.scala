@@ -5,16 +5,16 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import common.StopSystemAfterAll
-import jug.workshops.reactive.akka.basics.exercises.BasicsPart7MapReduceExercise.JobDivisionProtocol.{ComputationTask, Result, SendResponse}
+import jug.workshops.reactive.akka.basics.exercises.BasicsPart7DistributedComputationExercise.JobDivisionProtocol.{ComputationTask, Result, SendResponse}
 import org.scalatest.{MustMatchers, WordSpecLike}
 
 /**
   * Created by pawel on 30.10.16.
   */
-class BasicsPart7MapReduce extends TestKit(ActorSystem("test")) with MustMatchers
+class BasicsPart7DistributedComputation extends TestKit(ActorSystem("test")) with MustMatchers
     with WordSpecLike with StopSystemAfterAll with ImplicitSender{
 
-  import jug.workshops.reactive.akka.basics.exercises.BasicsPart7MapReduceExercise._
+  import jug.workshops.reactive.akka.basics.exercises.BasicsPart7DistributedComputationExercise._
 
   "Processing Logic" should{
     "calculate sum" in {

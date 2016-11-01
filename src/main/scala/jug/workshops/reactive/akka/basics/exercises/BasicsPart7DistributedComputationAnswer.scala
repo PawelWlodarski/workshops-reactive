@@ -5,7 +5,7 @@ import akka.actor.{Actor, ActorRef}
 import scala.annotation.tailrec
 
 
-object BasicsPart7MapReduceAnswer {
+object BasicsPart7DistributedComputationAnswer {
 
   import JobDivisionProtocol._
 
@@ -20,7 +20,7 @@ object BasicsPart7MapReduceAnswer {
   }
 
   object ProcessingLogic {
-    def computation(start: Long, end: Long) = {
+    def computation(start: Long, end: Long) : BigDecimal = {
 
       @tailrec
       def sum(v: Long, acc: BigDecimal): BigDecimal = v match {
