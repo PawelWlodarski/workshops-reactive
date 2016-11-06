@@ -55,5 +55,9 @@ object StreamsIntroPart1Basics {
 
     source.via(flow).to(realActorSubscriber).run()
 
+
+    TimeUnit.SECONDS.sleep(1)
+    system.terminate()
+
   }
 }
