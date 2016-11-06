@@ -4,17 +4,25 @@ version := "1.0"
 
 scalaVersion := "2.11.8"
 
-lazy val akkaVersion = "2.4.2"
+lazy val akkaVersion = "2.4.12"
 
 val akka="com.typesafe.akka" %% "akka-actor" % akkaVersion
 val akkaTest="com.typesafe.akka" %% "akka-testkit" % akkaVersion
-val akkaStream="com.typesafe.akka" %% "akka-stream" % "2.4.10"
-val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % "2.4.10" % "test"
+val akkaStream="com.typesafe.akka" %% "akka-stream" % akkaVersion
+val akkaStreamTestKit="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
+val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
 val akkaTyped="com.typesafe.akka" % "akka-typed-experimental_2.11" % "2.4.11"
 
-libraryDependencies ++= Seq(akka,akkaTest,akkaStream,akkaStreamsTest,akkaTyped)
+val cats = "org.typelevel" %% "cats" % "0.8.0"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+val scalaTest="org.scalatest" %% "scalatest" % "3.0.0" % "test"
+
+libraryDependencies ++= Seq(
+  akka,akkaTest,akkaStream,akkaStreamsTest,akkaTyped,akkaStreamTestKit,
+  cats,
+  scalaTest
+)
+
 
 
 parallelExecution in Test := false
