@@ -1,4 +1,4 @@
-package jug.workshops.reactive.streams.intro.exercises
+package jug.workshops.reactive.streams.intro.answers
 
 import java.util.concurrent.TimeUnit
 
@@ -10,18 +10,20 @@ import akka.stream.scaladsl.{Flow, Keep, RunnableGraph, Sink, Source}
 import scala.concurrent.Future
 import scala.util.{Success, Try}
 
-object StreamsIntroExercise1StreamConstruction {
+object StreamsIntroExercise1StreamConstructionAnswer {
 
 
   object Exercise1{
     //Exercise 1 :
     val numberCandidates: List[String] = List("1", "2", "c", "4", "e", "6", "g", "h", "9")
     //explain why list not iterable
-    val source1: Source[String, NotUsed] = ???
+    val source1: Source[String, NotUsed] = Source(numberCandidates)
 
-    val flow1: Flow[String, Int, NotUsed] = ???
+    val flow1: Flow[String, Int, NotUsed] = Flow[String]
+      .map(s => Try(s.toInt))
+      .collect { case Success(i) => i }
 
-    val sink1: Sink[Int, Future[Int]] = ???
+    val sink1: Sink[Int, Future[Int]] = Sink.reduce[Int](_ + _)
 
     val exercise1: RunnableGraph[Future[Int]] = source1.via(flow1).toMat(sink1)(Keep.right)
   }
@@ -66,16 +68,17 @@ object StreamsIntroExercise1StreamConstruction {
       case object Exercise2Completed
     }
 
-    class SumAllPricesActor(receiver:ActorRef) extends Actor{
+    class SumAllPricesActor(receiver:ActorRef) extends ActorSubscriber{
       import SumAllPricesActor._
 
       var state=BigDecimal(0)
 
       override def receive: Receive = {
-        case _ => ???
-        case Exercise2Completed => ???
+        case price:BigDecimal => state = state + price
+        case Exercise2Completed => receiver ! state
       }
 
+      override protected def requestStrategy: RequestStrategy = OneByOneRequestStrategy
     }
 
     def sink2(sink:ActorRef,onComplete:Any) = Sink.actorRef(sink,onComplete)
@@ -96,7 +99,15 @@ object StreamsIntroExercise1StreamConstruction {
       var state=BigDecimal(0)
 
       override def receive: Receive = {
-        case _ => ???
+        case Exercise3Init => sender ! Exercise3ACK
+        case price:BigDecimal =>
+          state = state + price
+          sender ! Exercise3ACK
+
+        case Exercise3Complete =>
+          receiver ! state
+
+
       }
     }
 

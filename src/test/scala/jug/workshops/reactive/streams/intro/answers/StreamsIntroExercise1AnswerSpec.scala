@@ -1,4 +1,4 @@
-package jug.workshops.reactive.streams.intro.exercises
+package jug.workshops.reactive.streams.intro.answers
 
 import akka.actor.{ActorSystem, Props}
 import akka.stream.ActorMaterializer
@@ -6,21 +6,27 @@ import akka.stream.scaladsl.{Keep, Source}
 import akka.stream.testkit.scaladsl.{TestSink, TestSource}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import common.StopSystemAfterAll
-import jug.workshops.reactive.streams.intro.exercises.StreamsIntroExercise1StreamConstruction.Exercise2.SumAllPricesActor.Exercise2Completed
-import jug.workshops.reactive.streams.intro.exercises.StreamsIntroExercise1StreamConstruction.Exercise3.SumAllPricesActorWithAck.{Exercise3ACK, Exercise3Complete, Exercise3Init}
 import org.scalatest.{MustMatchers, WordSpecLike}
+
+import jug.workshops.reactive.streams.intro.exercises.StreamsIntroExercise1StreamConstruction
 
 import scala.concurrent.{Await, Future}
 
-class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
+/**
+  * Created by pawel on 06.11.16.
+  */
+class StreamsIntroExercise1AnswerSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender{
 
   import StreamsIntroExercise1StreamConstruction.Exercise1._
+  import StreamsIntroExercise1StreamConstruction.Exercise2._
+  import StreamsIntroExercise1StreamConstruction.Exercise2.SumAllPricesActor._
+  import StreamsIntroExercise1StreamConstruction.Exercise3._
+  import StreamsIntroExercise1StreamConstruction.Exercise3.SumAllPricesActorWithAck._
 
   implicit val materializer = ActorMaterializer()
 
   "Exercise 1 Stream" should {
-
 
     "create source with number candidates" in {
       source1
@@ -60,30 +66,31 @@ class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("s
 
   }
 
-  import StreamsIntroExercise1StreamConstruction.Exercise2._
-
   "Exercise 2 Stream" should {
     "create source with future result" in {
       source2
         .runWith(TestSink.probe)
-        .request(???)
+        .request(3)
         .expectNext(
-          ???,???,???
+          Product(1, "Techno Greatest Hits 1995-97", BigDecimal(20)),
+          Product(2, "Bazooka", BigDecimal(120)),
+          Product(3, "MAc Book USB adapter", BigDecimal(1000))
         )
         .expectComplete()
     }
 
-    //uncomment and make it compile and pass
-//    "extract prices from product" in {
-//      val (pub: akka.stream.testkit.TestPublisher.Probe[Product],
-//          sub: akka.stream.testkit.TestSubscriber.Probe[BigDecimal]) = ???
-//
-//      sub.request(n = ???)
-//      pub.sendNext(???)
-//      pub.sendNext(???)
-//
-//      sub.expectNext(BigDecimal(20),BigDecimal(120))
-//    }
+    "extract prices from product" in {
+      val (pub, sub) = TestSource.probe[Product]
+        .via(flow2)
+        .toMat(TestSink.probe[BigDecimal])(Keep.both)
+        .run()
+
+      sub.request(n = 2)
+      pub.sendNext(Product(1, "Techno Greatest Hits 1995-97", BigDecimal(20)))
+      pub.sendNext(Product(2, "Bazooka", BigDecimal(120)))
+
+      sub.expectNext(BigDecimal(20),BigDecimal(120))
+    }
 
     "sum all prices" in {
       val probe=TestProbe()
@@ -96,8 +103,6 @@ class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("s
 
     }
   }
-
-  import StreamsIntroExercise1StreamConstruction.Exercise3._
 
   "Exercise 3 Stream" should {
 
@@ -131,3 +136,4 @@ class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("s
     }
   }
 }
+
