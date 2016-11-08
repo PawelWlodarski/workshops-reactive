@@ -72,8 +72,8 @@ object StreamsIntroExercise1StreamConstruction {
       var state=BigDecimal(0)
 
       override def receive: Receive = {
-        case _ => ???
         case Exercise2Completed => ???
+        case _ => ???
       }
 
     }
