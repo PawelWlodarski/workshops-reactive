@@ -25,14 +25,14 @@ class BasicsPart6TestingActorAnswer extends TestKit(ActorSystem("test")) with Mu
       val probe=TestProbe()
       val actorA=system.actorOf(Props(new ActorA(probe.ref,3)))
 
-      actorA ! ???
+      actorA ! StartGame
       actorA ! ???
       actorA ! ???
       actorA ! ???
 
       probe.expectMsg(???)
       probe.expectMsg(???)
-      probe.expectMsg(???)
+      probe.expectMsg(Ball(3))
 
       import scala.concurrent.duration._
 
@@ -43,10 +43,9 @@ class BasicsPart6TestingActorAnswer extends TestKit(ActorSystem("test")) with Mu
       "play for n rounds" in {
         val actorB=system.actorOf(Props(new ActorB(3)))
 
-        actorB ! ???
-        actorB ! ???
-        actorB ! ???
-        actorB ! ???
+        actorB ! Ball(1)
+        actorB ! Ball(2)
+        actorB ! Ball(3)
 
         expectMsg(???)
         expectMsg(???)
@@ -80,7 +79,7 @@ class ActorA(player:ActorRef, limit:Int) extends Actor with ActorLogging{
 
 class ActorB(limit:Int) extends Actor with ActorLogging{
 
-  var roundsRemain=limit;
+  var roundsRemain=limit
 
   override def receive: Receive = {
     case b:Ball if(roundsRemain>0)=> sender ! b

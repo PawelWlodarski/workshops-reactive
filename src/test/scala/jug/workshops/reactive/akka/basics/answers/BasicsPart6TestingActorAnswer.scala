@@ -82,7 +82,7 @@ class ActorA(player:ActorRef, limit:Int) extends Actor with ActorLogging{
 
 class ActorB(limit:Int) extends Actor with ActorLogging{
 
-  var roundsRemain=limit;
+  var roundsRemain=limit
 
   override def receive: Receive = {
     case b:Ball if(roundsRemain>0)=> sender ! b
