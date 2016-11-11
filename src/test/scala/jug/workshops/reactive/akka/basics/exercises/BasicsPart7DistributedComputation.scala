@@ -48,7 +48,7 @@ class BasicsPart7DistributedComputation extends TestKit(ActorSystem("test")) wit
 
       combiner ! SendResponse(probe.ref)
 
-      probe.expectMsg(6000)
+      probe.expectMsg(BigDecimal(6000))
     }
   }
 
@@ -71,7 +71,7 @@ class BasicsPart7DistributedComputation extends TestKit(ActorSystem("test")) wit
       TimeUnit.MILLISECONDS.sleep(100)
 
       combiner ! SendResponse(probe.ref)
-      probe.expectMsg(300)
+      probe.expectMsg(BigDecimal(300))
     }
   }
 
