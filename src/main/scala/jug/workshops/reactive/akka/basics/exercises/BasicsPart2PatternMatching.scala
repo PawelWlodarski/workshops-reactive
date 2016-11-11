@@ -34,14 +34,15 @@ object BasicsPart2PatternMatching {
     println("  **     "+demonstration1(1))
     println("  **     "+demonstration1(100))
 
-    println("\n*** DEMONSTRATION - PATTERN MATCHING ON TYPES")
-    println("  **     "+demonstration2(1))
-    println("  **     "+demonstration2(BigDecimal(1)))
+//Hands on
+//    println("\n*** DEMONSTRATION - PATTERN MATCHING ON TYPES")
+//    println("  **     "+demonstration2(1))
+//    println("  **     "+demonstration2(BigDecimal(1)))
 
-
-    println("\n*** DEMONSTRATION - PATTERN MATCHING ON CASE CLASSES")  //beware of Object!
-    println("  **     "+demonstration3(Admin("a@example.com")))
-    println("  **     "+demonstration3(Customer("c1@example.com", 300)))
+//Hands on
+//    println("\n*** DEMONSTRATION - PATTERN MATCHING ON CASE CLASSES")  //beware of Object!
+//    println("  **     "+demonstration3(Admin("a@example.com")))
+//    println("  **     "+demonstration3(Customer("c1@example.com", 300)))
   }
 
 }

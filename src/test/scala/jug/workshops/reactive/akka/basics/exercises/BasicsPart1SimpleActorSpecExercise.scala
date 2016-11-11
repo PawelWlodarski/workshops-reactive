@@ -49,6 +49,7 @@ class A1SimpleActor1SpecExercise extends TestKit(ActorSystem("SimpleActor")) wit
     }
   }
 
+  //Finish Implementation of MultiplyingCalculator prepared at the bottom of this file
   "Multiplying calculator" should {
     "multiply elements of received tuple : (i1,i2) => i1*i2" in {
       //given
