@@ -49,7 +49,7 @@ class History extends Actor with ActorLogging{
   var history=Vector[String]()
 
   override def receive: Receive = {
-    case "DISPLAY" =>  log.info(history.mkString("\n"))
+    case "DISPLAY" =>  log.info(history.mkString("\n","\n","\n"))
     case msg:String => history = history :+ msg
   }
 }
