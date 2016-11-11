@@ -26,20 +26,20 @@ object BasicsPart1SimpleActor1 {
 
     //HANDS ON : change waitPrint to print and check what will happen
     //HANDS ON :uncomment second message
-    waitPrint("\nsecond message")
-    simpleActorInstance ! "two"
+//    waitPrint("\nsecond message")
+//    simpleActorInstance ! "two"
 
     //HANDS ON : uncomment default
-    waitPrint("\nunknown message")
-    simpleActorInstance ! "unknown"
+//    waitPrint("\nunknown message")
+//    simpleActorInstance ! "unknown"
 
     //HANDS ON : ad hoc implementation for different types
     //!! : SHOW THAT ACTOR RUNS IN A DIFFERENT THREAD!
-    waitPrint("\ndifferent type")
-    simpleActorInstance ! 69
-    simpleActorInstance ! new Date()
-    simpleActorInstance ! List(1,2,3,4,5)
-    simpleActorInstance ! (1,2)  //explain tuple for exercises
+//    waitPrint("\ndifferent type")
+//    simpleActorInstance ! 69
+//    simpleActorInstance ! new Date()
+//    simpleActorInstance ! List(1,2,3,4,5)
+//    simpleActorInstance ! (1,2)  //explain tuple for exercises
 
     //explain tests in exercises
     system.terminate()
