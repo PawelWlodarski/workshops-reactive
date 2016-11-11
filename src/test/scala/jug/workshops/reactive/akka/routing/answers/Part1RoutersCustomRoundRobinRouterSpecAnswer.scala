@@ -1,14 +1,14 @@
-package jug.workshops.reactive.patterns.routing.exercises
+package jug.workshops.reactive.akka.routing.answers
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import common.StopSystemAfterAll
+import jug.workshops.reactive.akka.routing.answers.Part1RoutersCustomRoundRobinRouterAnswer.{CustomRouter, CustomWorker, Cycle, RoutedJob}
 import org.scalatest.{MustMatchers, WordSpecLike}
-import jug.workshops.reactive.patterns.routing.exercises.CustomRoundRobinRouterExercise._
 
 import scala.collection.immutable.{IndexedSeq, Seq}
 
-class CustomRoundRobinRouterSpecExercise extends TestKit(ActorSystem("customRouter"))
+class Part1RoutersCustomRoundRobinRouterSpecAnswer extends TestKit(ActorSystem("customRouter"))
 with WordSpecLike with MustMatchers with StopSystemAfterAll with ImplicitSender{
 
 

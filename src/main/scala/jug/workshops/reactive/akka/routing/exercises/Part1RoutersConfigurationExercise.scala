@@ -1,4 +1,4 @@
-package jug.workshops.reactive.patterns.routing.exercises
+package jug.workshops.reactive.akka.routing.exercises
 
 import java.util.concurrent.TimeUnit
 
@@ -7,10 +7,16 @@ import akka.routing.FromConfig
 import com.typesafe.config.ConfigFactory
 import jug.workshops.reactive.patterns.Displayer
 
-/**
-  * Created by pawel on 23.10.16.
-  */
-object RoutersConfigurationExercise {
+
+//Complete configuration in resources/routers/routersexercise.conf to make this example working
+// Use manual to understand domain
+// you have two operations
+// * Addition - handled by router pool
+// * Power - handled by router group
+// IMPORTANT - each worker has introduced artificial delay to simulate calculation time.
+// tests are asynchronous and have small timeout set so only way to pass tests is to configure proper number
+// of simultaneous workers behind routers
+object Part1RoutersConfigurationExercise {
 
   //messages
   sealed trait MathOperation
@@ -31,7 +37,7 @@ object RoutersConfigurationExercise {
     }
   }
 
-  //AddOperation
+  //Handles AddOperation
   class AddWorker extends Actor{
     override def receive: Receive = {
       case add @ AddOperation(numbers) =>
@@ -41,6 +47,7 @@ object RoutersConfigurationExercise {
     }
   }
 
+  //Handles Pow operation
   class PowerWorker extends Actor with ActorLogging{
 
     @scala.throws[Exception](classOf[Exception])
@@ -70,7 +77,7 @@ object RoutersConfigurationExercise {
 
   //example usage
   def main(args: Array[String]): Unit = {
-    val demoConfig = ConfigFactory.load("routers/exercise")
+    val demoConfig = ConfigFactory.load("routers/exerciseexercise")
     val system=ActorSystem("routersExercise",demoConfig)
 
     val exerciseActor=system.actorOf(Props[MathEndPoint],"exerciseActor")

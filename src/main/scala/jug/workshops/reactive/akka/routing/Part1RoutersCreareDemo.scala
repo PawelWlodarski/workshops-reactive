@@ -1,4 +1,4 @@
-package jug.workshops.reactive.patterns.routing
+package jug.workshops.reactive.akka.routing
 
 import java.util.concurrent.TimeUnit
 
@@ -6,24 +6,24 @@ import akka.actor.{Actor, ActorSystem, Props}
 import akka.routing.{FromConfig, RandomGroup, RoundRobinPool}
 import com.typesafe.config.ConfigFactory
 
-/**
-  * Created by pawel on 23.10.16.
-  */
-object RoutersDemo {
+object Part1RoutersCreareDemo {
 
   def main(args: Array[String]): Unit = {
-    //CUSTOM CONFIG
-    val demoConfig = ConfigFactory.load("routers/demo")
+    println("*** CREATING ROUTERS ***")
+    //This is how you cna pass custom config to an actor system - open this config
+    val demoConfig = ConfigFactory.load("routers/routersdemo")
     val system=ActorSystem("routers",demoConfig)
 
-    //GROUP WORKERS
+    //Here we are creating workers for group - explain a difference between
+    //group and pool
     system.actorOf(Props[GroupSupervisor],"workers")  //reference not needed, only workers declaration
 
 
+    println("   * CREATING ROUTERS SIMULATION ")
+    println("   * TEST DIFFERENT ROUTERS IN MAIN ACTOR RECEIVE METHOD ")
     val demo=system.actorOf(Props[DemoMain],"demoMainActor")
 
-
-    (1 to 20).foreach(i=>
+    (1 to 10).foreach(i=>
       demo ! Work(s"value$i")
     )
 
@@ -37,9 +37,13 @@ object RoutersDemo {
   class DemoMain extends Actor{
 
     //routers and group declaration - from config and from code
+    //USING POOL FROM CONFIG
     val router1=context.actorOf(FromConfig.props(Props[RouterWorker]),"routerNameFromConfig1")
+    //USING POOL FROM CODE
     val router2 = context.actorOf(RoundRobinPool(3).props(Props[RouterWorker]),"router2")
+    //USING GROUP FROM CONFIG
     val group1 = context.actorOf(FromConfig.props(),"group1FromConfig")
+    //USING GROUP FROM CODE
     val group2 = context.actorOf(RandomGroup(
       List("/user/workers/groupWorker1","/user/workers/groupWorker2")).props(), "router4"
     )
@@ -67,7 +71,7 @@ object RoutersDemo {
     override def preStart(): Unit = {
       Seq(1,2).foreach{i=>
         val child=context.actorOf(Props[RouterWorker],s"groupWorker$i")
-        println(child.path)
+        println("created worker for group : "+child.path)
       }
     }
 

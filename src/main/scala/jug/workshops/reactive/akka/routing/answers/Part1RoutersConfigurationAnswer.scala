@@ -1,4 +1,4 @@
-package jug.workshops.reactive.patterns.routing.answers
+package jug.workshops.reactive.akka.routing.answers
 
 import java.util.concurrent.TimeUnit
 
@@ -10,7 +10,7 @@ import jug.workshops.reactive.patterns.Displayer
 /**
   * Created by pawel on 23.10.16.
   */
-object RoutersConfigurationAnswer {
+object Part1RoutersConfigurationAnswer {
 
   def main(args: Array[String]): Unit = {
     val demoConfig = ConfigFactory.load("routers/answer")

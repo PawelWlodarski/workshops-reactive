@@ -1,10 +1,10 @@
-package jug.workshops.reactive.patterns.routing.answers
+package jug.workshops.reactive.akka.routing.answers
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import com.typesafe.config.ConfigFactory
 import common.StopSystemAfterAll
-import jug.workshops.reactive.patterns.routing.answers.RoutersConfigurationAnswer._
+import jug.workshops.reactive.akka.routing.answers.Part1RoutersConfigurationAnswer._
 import org.scalatest.{MustMatchers, WordSpecLike}
 
 /**

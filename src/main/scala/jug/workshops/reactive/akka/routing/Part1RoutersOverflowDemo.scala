@@ -1,17 +1,14 @@
-package jug.workshops.reactive.patterns.routing
+package jug.workshops.reactive.akka.routing
 
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 
-/**
-  * Created by pawel on 23.10.16.
-  */
-object RoutersOverflowDemo {
+object Part1RoutersOverflowDemo {
 
   import scala.concurrent.duration._
-
+  //TURN ON VISUALWM AND CHECK SIMULATION
   def main(args: Array[String]): Unit = {
       val system=ActorSystem("overflow")
 
