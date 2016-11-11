@@ -18,11 +18,11 @@ class BasicsPart3ThreadsAndActorsSpecExercise extends TestKit(ActorSystem("Threa
     "executing logic in different Thread" in {
      val exerciseActor =system.actorOf(Props[ExerciseActor],"exerciseActorTest1")
 
-      exerciseActor ! ThreadId
+      exerciseActor ! ThreadId()
       val actorThreadId=expectMsgClass(classOf[Long])
 
 
-      exerciseActor ! ThreadName
+      exerciseActor ! ThreadName()
       val actorThreadName=expectMsgClass(classOf[String])
 
       println(s"actor is working in [id : $actorThreadId, name: $actorThreadName]")
@@ -37,7 +37,7 @@ class BasicsPart3ThreadsAndActorsSpecExercise extends TestKit(ActorSystem("Threa
       val exerciseActor =system.actorOf(Props[ExerciseActor],"exerciseActorTest2")
 
 
-      exerciseActor ! List(ThreadId,ThreadName)
+      exerciseActor ! List(ThreadId(),ThreadName())
       val actorThreadId=expectMsgClass(classOf[Long])
       val actorThreadName=expectMsgClass(classOf[String])
 

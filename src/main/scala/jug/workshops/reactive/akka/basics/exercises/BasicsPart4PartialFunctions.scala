@@ -26,13 +26,14 @@ object BasicsPart4PartialFunctions {
     println("    * simple head : "+head(List(1,2,3,4,5)))
 //    println(head(List())) // error
 
-    println("\n    * partial head List(1,2,3) : " + partialHead.isDefinedAt(List(1,2,3)))
-    println("    * partial head List() : " + partialHead.isDefinedAt(List()))
+//HANDS ON
+//    println("\n    * partial head List(1,2,3) : " + partialHead.isDefinedAt(List(1,2,3)))
+//    println("    * partial head List() : " + partialHead.isDefinedAt(List()))
 
-
-    println("\n    * partial head Pattern Matching List(1,2,3) : " + partialHeadPM.isDefinedAt(List(1,2,3)))
-    println("    * partial head Pattern Matching List() : " + partialHeadPM.isDefinedAt(List()))
-    println("    * partial head Pattern Matching List(1,2,3) : " + partialHeadPM(List(1,2,3)))
+//HANDS ON
+//    println("\n    * partial head Pattern Matching List(1,2,3) : " + partialHeadPM.isDefinedAt(List(1,2,3)))
+//    println("    * partial head Pattern Matching List() : " + partialHeadPM.isDefinedAt(List()))
+//    println("    * partial head Pattern Matching List(1,2,3) : " + partialHeadPM(List(1,2,3)))
 
 
   }
