@@ -11,7 +11,7 @@ import scala.util.Random
 /**
   * Each worker sleeps random time period and then response. Only first response is resend.
   */
-object Part2RoutersScatterGatherDemo {
+object RoutersPart2ScatterGatherDemo {
 
   def main(args: Array[String]): Unit = {
 

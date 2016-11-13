@@ -4,10 +4,10 @@ import akka.actor.{ActorSystem, Props}
 import akka.routing.Broadcast
 import akka.testkit.{ImplicitSender, TestKit}
 import common.StopSystemAfterAll
-import jug.workshops.reactive.akka.routing.exercises.Part2RoutersCustomScatterGatherExercise._
+import jug.workshops.reactive.akka.routing.exercises.RoutersPart2CustomScatterGatherExercise._
 import org.scalatest.{MustMatchers, WordSpecLike}
 
-class Part2RoutersCustomScatterGatherSpec extends TestKit(ActorSystem()) with MustMatchers
+class RoutersPart2CustomScatterGatherSpec extends TestKit(ActorSystem()) with MustMatchers
     with WordSpecLike with StopSystemAfterAll with ImplicitSender{
 
   import scala.concurrent.duration._

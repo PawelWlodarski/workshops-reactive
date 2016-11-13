@@ -10,7 +10,7 @@ import jug.workshops.reactive.patterns.Displayer
 /**
   * Created by pawel on 23.10.16.
   */
-object Part1RoutersConfigurationAnswer {
+object RoutersPart1ConfigurationAnswer {
 
   def main(args: Array[String]): Unit = {
     val demoConfig = ConfigFactory.load("routers/answer")

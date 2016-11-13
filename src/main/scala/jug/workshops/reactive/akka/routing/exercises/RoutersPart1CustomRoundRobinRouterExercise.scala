@@ -1,26 +1,43 @@
-package jug.workshops.reactive.akka.routing.answers
+package jug.workshops.reactive.akka.routing.exercises
 
 import akka.actor.{Actor, ActorRef, Props}
 
-object Part1RoutersCustomRoundRobinRouterAnswer {
+object RoutersPart1CustomRoundRobinRouterExercise {
 
-
+  /**
+    * having : [worker1,worker2,worker3]
+    *
+    * router will route messages with cycdles
+    *
+    * msg1 -> worker1
+    * msg2 -> worker2
+    * msg3 -> worker3
+    * msg4 -> worker1
+    * msg5 -> worker2
+    * msg6 -> worker3
+    * msg7 -> worker1
+    *...
+    *
+    * @param howManyWorkers
+    * @param workerProps
+    */
   class CustomRouter(howManyWorkers:Int, workerProps:Props) extends Actor{
 
-    val indexIterator=Cycle.cycleBetween(0,howManyWorkers)
-
+    //change this mechanism to your own if you like or use provided in cycle object
+    val indexIterator:Iterator[Int] = ???
+    //don't change it - generated worker name is used in test
     def generateWorkerName(workerNumber:Int) = {
       val parentName=self.path.name
       s"$parentName:worker:$workerNumber"
     }
 
-    val workers:IndexedSeq[ActorRef] = {
-      (1 to howManyWorkers).map(i=> context.actorOf(workerProps,generateWorkerName(i)))
-    }
+    //initiate workers pool
+    val workers:IndexedSeq[ActorRef] = ???
 
 
+    //forward to proper worker
     override def receive: Receive = {
-      case msg => workers(indexIterator.next()) forward msg
+      case msg => ???
 
     }
   }
@@ -40,9 +57,10 @@ object Part1RoutersCustomRoundRobinRouterAnswer {
   class CustomWorker extends Actor{
     /**
       * When
+      *   workerName=customRouter:worker:1
       *   input = RoutedJob("someText")
       * Then
-      *   return : "SOMETEXT"
+      *   return : "SOMETEXTcustomRouter:worker:1"
       */
     override def receive: Receive = {
       case RoutedJob(text) => sender ! (text.toUpperCase+self.path.name)

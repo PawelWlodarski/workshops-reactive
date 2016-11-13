@@ -11,7 +11,7 @@ import scala.collection.immutable.IndexedSeq
 import scala.concurrent.Future
 import scala.util.Random
 
-object Part2RoutersCustomScatterGatherAnswer {
+object RoutersPart2CustomScatterGatherAnswer {
 
 
   case class Detect(word: String)

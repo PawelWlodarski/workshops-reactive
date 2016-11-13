@@ -6,7 +6,7 @@ import akka.actor.{Actor, ActorSystem, Props}
 import akka.routing.{FromConfig, RandomGroup, RoundRobinPool}
 import com.typesafe.config.ConfigFactory
 
-object Part1RoutersCreateDemo {
+object RoutersPart1CreateDemo {
 
   def main(args: Array[String]): Unit = {
     println("*** CREATING ROUTERS ***")

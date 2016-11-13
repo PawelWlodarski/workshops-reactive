@@ -16,7 +16,7 @@ import jug.workshops.reactive.patterns.Displayer
 // IMPORTANT - each worker has introduced artificial delay to simulate calculation time.
 // tests are asynchronous and have small timeout set so only way to pass tests is to configure proper number
 // of simultaneous workers behind routers
-object Part1RoutersConfigurationExercise {
+object RoutersPart1ConfigurationExercise {
 
   //messages
   sealed trait MathOperation

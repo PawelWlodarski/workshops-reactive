@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 
-object Part1RoutersOverflowDemo {
+object RoutersPart1OverflowDemo {
 
   import scala.concurrent.duration._
   //TURN ON VISUALWM AND CHECK SIMULATION

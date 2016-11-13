@@ -11,7 +11,7 @@ import scala.collection.immutable.IndexedSeq
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.Random
 
-object Part2RoutersCustomScatterGatherExercise {
+object RoutersPart2CustomScatterGatherExercise {
 
   //Protocol messages
   //request to detected new word

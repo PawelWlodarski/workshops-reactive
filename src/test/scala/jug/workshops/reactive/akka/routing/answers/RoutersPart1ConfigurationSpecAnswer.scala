@@ -1,13 +1,16 @@
-package jug.workshops.reactive.akka.routing.exercises
+package jug.workshops.reactive.akka.routing.answers
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
 import com.typesafe.config.ConfigFactory
 import common.StopSystemAfterAll
-import jug.workshops.reactive.akka.routing.exercises.Part1RoutersConfigurationExercise._
+import jug.workshops.reactive.akka.routing.answers.RoutersPart1ConfigurationAnswer._
 import org.scalatest.{MustMatchers, WordSpecLike}
 
-class Part1RoutersConfigurationSpecExercise extends TestKit(RoutersConfiguration.testSystem) with WordSpecLike
+/**
+  * Created by pawel on 23.10.16.
+  */
+class RoutersConfigurationSpecAnswer extends TestKit(RoutersConfiguration.testSystem) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender {
 
   val endPoint = system.actorOf(Props[MathEndPoint], "exerciseActor")
@@ -72,7 +75,7 @@ class Part1RoutersConfigurationSpecExercise extends TestKit(RoutersConfiguration
 object RoutersConfiguration {
 
   def testSystem: ActorSystem = {
-    val demoConfig = ConfigFactory.load("routers/routersexercise")
+    val demoConfig = ConfigFactory.load("routers/answer")
     ActorSystem("routersExercise", demoConfig)
   }
 
