@@ -1,4 +1,4 @@
-package jug.workshops.reactive.patterns.routing.answers
+package jug.workshops.reactive.akka.routing.answers
 
 import java.util.concurrent.TimeUnit
 
@@ -11,7 +11,7 @@ import scala.collection.immutable.IndexedSeq
 import scala.concurrent.Future
 import scala.util.Random
 
-object CustomScatterGatherAnswer {
+object Part2RoutersCustomScatterGatherAnswer {
 
 
   case class Detect(word: String)
@@ -51,10 +51,10 @@ object CustomScatterGatherAnswer {
 
     import Dictionary._
 
-    var dictionary: Map[String, List[String]] = Map(
-      "polish" -> List("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
-      "english" -> List("computer", "browser", "keyboard", "mouse", "programming"),
-      "esperanto" -> List("komputilo", "retumilo", "klavaro", "muso", "programado")
+    var dictionary: Map[String, Set[String]] = Map(
+      "polish" -> Set("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
+      "english" -> Set("computer", "browser", "keyboard", "mouse", "programming"),
+      "esperanto" -> Set("komputilo", "retumilo", "klavaro", "muso", "programado")
     )
 
     override def receive: Receive = {
@@ -69,15 +69,15 @@ object CustomScatterGatherAnswer {
   }
 
   object Dictionary{
-    type Dictionary=Map[String,List[String]]
+    type Dictionary=Map[String,Set[String]]
 
     def detect(dictionary:Dictionary)(word:String): Option[String] =dictionary.find {
       case (lang, words) => words.contains(word)
     }.map(_._1)
 
     def update(dictionary: Dictionary)(language:String,word:String):Dictionary={
-      val words = dictionary.getOrElse(language, List.empty[String])
-      val newWords=word::words
+      val words = dictionary.getOrElse(language, Set.empty[String])
+      val newWords=words + word
       dictionary + (language->newWords)
     }
   }

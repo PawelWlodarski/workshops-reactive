@@ -1,13 +1,13 @@
-package jug.workshops.reactive.patterns.routing.exercises
+package jug.workshops.reactive.akka.routing.exercises
 
 import akka.actor.{ActorSystem, Props}
 import akka.routing.Broadcast
 import akka.testkit.{ImplicitSender, TestKit}
 import common.StopSystemAfterAll
-import jug.workshops.reactive.patterns.routing.exercises.CustomScatterGatherExercise._
+import jug.workshops.reactive.akka.routing.exercises.Part2RoutersCustomScatterGatherExercise._
 import org.scalatest.{MustMatchers, WordSpecLike}
 
-class CustomScatterGatherSpec extends TestKit(ActorSystem()) with MustMatchers
+class Part2RoutersCustomScatterGatherSpec extends TestKit(ActorSystem()) with MustMatchers
     with WordSpecLike with StopSystemAfterAll with ImplicitSender{
 
   import scala.concurrent.duration._
@@ -72,29 +72,24 @@ class CustomScatterGatherSpec extends TestKit(ActorSystem()) with MustMatchers
     "update language when there is existing entry" in {
       val updated=Dictionary.update(dictionary)("polish","raz")
 
-      updated must contain only(
-        "polish" -> List("raz","komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
-        "english" -> List("computer", "browser", "keyboard", "mouse", "programming"),
-        "esperanto" -> List("komputilo", "retumilo", "klavaro", "muso", "programado")
-       )
+      val detected: Option[String] = Dictionary.detect(updated)("raz")
+
+      detected mustBe Some("polish")
     }
 
 
     "update language when there is no existing entry" in {
       val updated=Dictionary.update(dictionary)("zulu","ikhompyutha")
 
-      updated must contain only(
-        "polish" -> List("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
-        "english" -> List("computer", "browser", "keyboard", "mouse", "programming"),
-        "esperanto" -> List("komputilo", "retumilo", "klavaro", "muso", "programado"),
-        "zulu" -> List("ikhompyutha")
-        )
+      val detected: Option[String] = Dictionary.detect(updated)("ikhompyutha")
+
+      detected mustBe Some("zulu")
     }
   }
 
-  var dictionary: Map[String, List[String]] = Map(
-    "polish" -> List("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
-    "english" -> List("computer", "browser", "keyboard", "mouse", "programming"),
-    "esperanto" -> List("komputilo", "retumilo", "klavaro", "muso", "programado")
+  var dictionary: Map[String, Set[String]] = Map(
+    "polish" -> Set("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
+    "english" -> Set("computer", "browser", "keyboard", "mouse", "programming"),
+    "esperanto" -> Set("komputilo", "retumilo", "klavaro", "muso", "programado")
   )
 }

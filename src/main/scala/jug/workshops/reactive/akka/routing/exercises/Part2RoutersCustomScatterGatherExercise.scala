@@ -1,4 +1,4 @@
-package jug.workshops.reactive.patterns.routing.exercises
+package jug.workshops.reactive.akka.routing.exercises
 
 import java.util.concurrent.TimeUnit
 
@@ -11,7 +11,7 @@ import scala.collection.immutable.IndexedSeq
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.Random
 
-object CustomScatterGatherExercise {
+object Part2RoutersCustomScatterGatherExercise {
 
   //Protocol messages
   //request to detected new word
@@ -46,10 +46,10 @@ object CustomScatterGatherExercise {
 
     import Dictionary._
 
-    var dictionary: Map[String, List[String]] = Map(
-      "polish" -> List("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
-      "english" -> List("computer", "browser", "keyboard", "mouse", "programming"),
-      "esperanto" -> List("komputilo", "retumilo", "klavaro", "muso", "programado")
+    var dictionary: Map[String, Set[String]] = Map(
+      "polish" -> Set("komputer", "przeglądarka", "klawiatura", "mysz", "programowanie"),
+      "english" -> Set("computer", "browser", "keyboard", "mouse", "programming"),
+      "esperanto" -> Set("komputilo", "retumilo", "klavaro", "muso", "programado")
     )
 
     override def receive: Receive = {
@@ -64,7 +64,7 @@ object CustomScatterGatherExercise {
 
   //you can use this component or write logic inside actors, what are consequences?
   object Dictionary{
-    type Dictionary=Map[String,List[String]]
+    type Dictionary=Map[String,Set[String]]
 
     def detect(dictionary:Dictionary)(word:String): Option[String] = ???
 

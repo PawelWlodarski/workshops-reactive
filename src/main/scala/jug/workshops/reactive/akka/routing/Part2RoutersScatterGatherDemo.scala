@@ -1,4 +1,4 @@
-package jug.workshops.reactive.patterns.routing
+package jug.workshops.reactive.akka.routing
 
 import java.util.concurrent.TimeUnit
 
@@ -11,7 +11,7 @@ import scala.util.Random
 /**
   * Each worker sleeps random time period and then response. Only first response is resend.
   */
-object RoutersScatterGatherDemo {
+object Part2RoutersScatterGatherDemo {
 
   def main(args: Array[String]): Unit = {
 
@@ -32,16 +32,18 @@ object RoutersScatterGatherDemo {
   case class Response(requestId: MessageId, from: String)
 
   class Sender extends Actor with ActorLogging{
-
+    //declaration directly in the code
     val worker=context.actorOf(
       ScatterGatherFirstCompletedPool(3,within = 6 seconds )
         .props(Props[Worker]),"workerPool"
     )
+    //send totally 6 requests - 2 to each worker
     override def receive: Receive = {
       case "START" =>
          worker ! Request(MessageId(1))
          worker ! Request(MessageId(2))
 
+    //but we should receive only 2 fastest responses
       case Response(id,description) =>
         log.info(s"response $id received from $description")
     }
@@ -51,6 +53,7 @@ object RoutersScatterGatherDemo {
     override def receive: Receive = {
       case Request(id) =>
         val describeSelf = s"${self.path.toStringWithoutAddress}"
+        //each worker sleeps random amount of time so responses will arrive in random order
         val slept = RandomSleep.sleep()
         log.info(s"$describeSelf calculated $id for $slept")
         sender ! Response(id,describeSelf )
