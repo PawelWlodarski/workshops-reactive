@@ -1,6 +1,6 @@
 package jug.workshops.reactive.akka.routing.exercises
 
-import akka.actor.{Actor, ActorRef}
+import akka.actor.Actor
 import akka.routing.ConsistentHashingRouter.ConsistentHashMapping
 
 object RoutersPart3StickyShopBasketExercise {
@@ -16,9 +16,7 @@ object RoutersPart3StickyShopBasketExercise {
   case class Response[A](code:Int,content:A)
 
   object ShopBasket{
-    def hashingFunction:ConsistentHashMapping={
-      case Request(sessionId,_) => sessionId
-    }
+    def hashingFunction:ConsistentHashMapping = ???
   }
 
 
@@ -28,11 +26,7 @@ object RoutersPart3StickyShopBasketExercise {
     var purchased=Map[Int,Seq[ShopProductRouting]]()
 
     override def receive: Receive = {
-      case Request(sessionId,Purchase(product)) =>
-        val purchasedPerSession=purchased.getOrElse(sessionId,Seq.empty[ShopProductRouting])
-        val updatedPurchases=purchasedPerSession :+ product
-        purchased = purchased + (sessionId -> updatedPurchases)
-      case Request(sessionId,ListProducts) => sender ! purchased.get(sessionId)
+      case _ => ???
     }
   }
 

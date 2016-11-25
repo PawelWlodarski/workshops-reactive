@@ -16,7 +16,9 @@ object RoutersPart3StickyShopBasketAnswer {
   case class Response[A](code:Int,content:A)
 
   object ShopBasket{
-    def hashingFunction:ConsistentHashMapping = ???
+    def hashingFunction:ConsistentHashMapping={
+      case Request(sessionId,_) => sessionId
+    }
   }
 
 
@@ -26,7 +28,11 @@ object RoutersPart3StickyShopBasketAnswer {
     var purchased=Map[Int,Seq[ShopProductRouting]]()
 
     override def receive: Receive = {
-      case _ => ???
+      case Request(sessionId,Purchase(product)) =>
+        val purchasedPerSession=purchased.getOrElse(sessionId,Seq.empty[ShopProductRouting])
+        val updatedPurchases=purchasedPerSession :+ product
+        purchased = purchased + (sessionId -> updatedPurchases)
+      case Request(sessionId,ListProducts) => sender ! purchased.get(sessionId)
     }
   }
 
