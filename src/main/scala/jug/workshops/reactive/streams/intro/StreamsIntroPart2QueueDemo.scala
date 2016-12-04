@@ -7,7 +7,7 @@ import akka.actor.{Actor, ActorSystem, Props}
 import akka.stream.scaladsl.{Flow, Keep, RunnableGraph, Sink, Source, SourceQueueWithComplete}
 import akka.stream.{ActorMaterializer, OverflowStrategy}
 
-object StreamsPart2QueueDemo {
+object StreamsIntroPart2QueueDemo {
 
   def main(args: Array[String]): Unit = {
     implicit val system = ActorSystem("StreamQueue")
@@ -24,7 +24,7 @@ object StreamsPart2QueueDemo {
 
     val sink=Sink.foreach(println)
 
-    //EXPLAIN WHY Keep.left
+    //EXPLAIN WHY Keep.left /EXPERIMENT, Keep.right , Keep.both
     val graph: RunnableGraph[SourceQueueWithComplete[String]] =source.via(flow).toMat(sink)(Keep.left)
 
     //SHOW IMPLEMENTATION OF QUEUE
