@@ -5,12 +5,12 @@ import akka.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
 
 object RoutersPart3ProtocolTransmissionExercise {
 
-  object TransmissionByte {
-    def bytesToString(bytes: Seq[TransmissionByte]): String =
-      bytes.map(_.toText).mkString
+  object TransmissionBit {
+    def bitToString(bit: Seq[TransmissionBit]): String =
+      bit.map(_.toText).mkString
   }
 
-  sealed trait TransmissionByte {
+  sealed trait TransmissionBit {
     def toText(): String = this match {
       case One => "1"
       case Zero => "0"
@@ -18,25 +18,25 @@ object RoutersPart3ProtocolTransmissionExercise {
     }
   }
 
-  case object One extends TransmissionByte
+  case object One extends TransmissionBit
 
-  case object Zero extends TransmissionByte
+  case object Zero extends TransmissionBit
 
-  case class Transmission(id: Int, part: TransmissionByte)
+  case class Transmission(id: Int, part: TransmissionBit)
 
-  case class TransmissionWord(bytes: List[TransmissionByte])
+  case class TransmissionWord(bits: List[TransmissionBit])
 
   class Transmitter(receiver: ActorRef, bandStart: Int) extends Actor {
 
     var currentId = bandStart
 
     override def receive: Receive = {
-      case TransmissionWord(bytes) => ???
+      case TransmissionWord(bits) => ???
     }
   }
 
   class TransmissionReceiver(processor: ActorRef) extends Actor {
-    var transmissions = Map[Int, List[TransmissionByte]]()
+    var transmissions = Map[Int, List[TransmissionBit]]()
 
     override def receive: Receive = ???
   }

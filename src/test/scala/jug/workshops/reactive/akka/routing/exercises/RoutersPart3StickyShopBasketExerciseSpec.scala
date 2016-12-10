@@ -57,8 +57,13 @@ class RoutersPart3StickyShopBasketExerciseSpec extends TestKit(ActorSystem()) wi
         basket ! Request(3,ListProducts)
 
         import scala.collection._
+        basket ! Request(1,ListProducts)
         expectMsg(Response(200,Some(immutable.Seq(tv))))
+
+        basket ! Request(2,ListProducts)
         expectMsg(Response(200,Some(immutable.Seq(pc,car))))
+
+        basket ! Request(3,ListProducts)
         expectMsg(Response(200,Some(immutable.Seq(book, mp3player))))
 
       }

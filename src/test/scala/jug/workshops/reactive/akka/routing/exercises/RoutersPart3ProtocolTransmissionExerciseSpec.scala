@@ -13,19 +13,19 @@ class RoutersPart3ProtocolTransmissionExerciseSpec extends TestKit(ActorSystem()
 
   //you can switch from ConsistentHashableEnvelope to ConsistentHashable trait if you want
   "Transmitter" should {
-    "split message into bytes" in {
+    "split message into bits" in {
       val probe=TestProbe()
 
       val transmitter=system.actorOf(Props(new Transmitter(probe.ref,bandStart = 1)))
 
-      transmitter ! TransmissionWord(List(One,Zero,Zero,One))
+      transmitter ! TransmissionWord(List(One,Zero,One,One))
 
       import scala.concurrent.duration._
-      val bytes=probe.receiveWhile(500 millis){
-        case ConsistentHashableEnvelope(Transmission(_,byte),_) => byte
+      val bits=probe.receiveWhile(500 millis){
+        case ConsistentHashableEnvelope(Transmission(1,bit),_) => bit
       }
 
-      bytes mustBe List(One,Zero,Zero,One)
+      bits mustBe List(One,Zero,One,One)
 
     }
   }
@@ -39,9 +39,9 @@ class RoutersPart3ProtocolTransmissionExerciseSpec extends TestKit(ActorSystem()
       receiver ! Transmission(1,One)
       receiver ! Transmission(1,Zero)
       receiver ! Transmission(1,Zero)
-      receiver ! Transmission(1,One)
+      receiver ! Transmission(1,Zero)
 
-      probe.expectMsg("1001")
+      probe.expectMsg("1000")
 
     }
   }
