@@ -38,6 +38,7 @@ object RoutersPart2CustomScatterGatherExercise {
 
       case message => ??? //send message to each worker but handle only first response
       // (ask pattern, futures, Future.firstCompletedOf)
+      // (future.onComplete or pipeTo)
 
     }
   }

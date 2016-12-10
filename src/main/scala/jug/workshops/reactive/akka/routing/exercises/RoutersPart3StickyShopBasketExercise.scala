@@ -23,6 +23,7 @@ object RoutersPart3StickyShopBasketExercise {
   class ShopBasket extends Actor{
 
     val Seq=scala.collection.immutable.Seq
+    type Seq[A]=scala.collection.immutable.Seq[A]
     var purchased=Map[Int,Seq[ShopProductRouting]]()
 
     override def receive: Receive = {

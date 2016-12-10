@@ -25,6 +25,7 @@ object RoutersPart3StickyShopBasketAnswer {
   class ShopBasket extends Actor{
 
     val Seq=scala.collection.immutable.Seq
+    type Seq[A]=scala.collection.immutable.Seq[A]
     var purchased=Map[Int,Seq[ShopProductRouting]]()
 
     override def receive: Receive = {
@@ -32,7 +33,7 @@ object RoutersPart3StickyShopBasketAnswer {
         val purchasedPerSession=purchased.getOrElse(sessionId,Seq.empty[ShopProductRouting])
         val updatedPurchases=purchasedPerSession :+ product
         purchased = purchased + (sessionId -> updatedPurchases)
-      case Request(sessionId,ListProducts) => sender ! purchased.get(sessionId)
+      case Request(sessionId,ListProducts) => sender ! Response(200,purchased.get(sessionId))
     }
   }
 

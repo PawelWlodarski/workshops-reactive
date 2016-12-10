@@ -14,8 +14,11 @@ import jug.workshops.reactive.patterns.Displayer
 // * Addition - handled by router pool
 // * Power - handled by router group
 // IMPORTANT - each worker has introduced artificial delay to simulate calculation time.
-// tests are asynchronous and have small timeout set so only way to pass tests is to configure proper number
-// of simultaneous workers behind routers
+// tests are asynchronous and have small timeout set so the only way to pass tests is to configure proper number
+// of simultaneous workers behind routers - use test Part1RoutersConfigurationSpecExercise
+
+//TOME : show where actors are initiated
+//There is an example in main at the bottom of this file
 object RoutersPart1ConfigurationExercise {
 
   //messages
@@ -77,7 +80,7 @@ object RoutersPart1ConfigurationExercise {
 
   //example usage
   def main(args: Array[String]): Unit = {
-    val demoConfig = ConfigFactory.load("routers/exerciseexercise")
+    val demoConfig = ConfigFactory.load("routers/routersexercise")
     val system=ActorSystem("routersExercise",demoConfig)
 
     val exerciseActor=system.actorOf(Props[MathEndPoint],"exerciseActor")

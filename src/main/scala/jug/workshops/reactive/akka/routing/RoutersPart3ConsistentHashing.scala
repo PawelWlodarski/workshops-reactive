@@ -33,7 +33,7 @@ object RoutersPart3ConsistentHashing {
     router ! HashedMessage(5,"Msg[5:1]")
     router ! HashedMessage(5,"Msg[5:2]")
     router ! HashedMessage(4,"Msg[4:2]")
-    router ! Broadcast("DISPLAY")
+    router ! Broadcast("DISPLAY") //EXPLAIN BROADCAST HERE
 
 
 

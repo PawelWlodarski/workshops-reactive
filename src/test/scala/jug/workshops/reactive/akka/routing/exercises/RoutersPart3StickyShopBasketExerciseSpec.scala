@@ -28,7 +28,7 @@ class RoutersPart3StickyShopBasketExerciseSpec extends TestKit(ActorSystem()) wi
 
         basket ! Request(1,ListProducts)
         import scala.collection._
-        expectMsg(Some(immutable.Seq(tv,pc,book)))
+        expectMsg(Response(200,Some(immutable.Seq(tv,pc,book))))
 
       }
     }
@@ -43,8 +43,8 @@ class RoutersPart3StickyShopBasketExerciseSpec extends TestKit(ActorSystem()) wi
         val tv = ShopProductRouting("tv", BigDecimal("100"))
         val pc = ShopProductRouting("pc", BigDecimal("80"))
         val book = ShopProductRouting("book", BigDecimal("20"))
-        val car = ShopProductRouting("book", BigDecimal("200"))
-        val mp3player = ShopProductRouting("book", BigDecimal("50"))
+        val car = ShopProductRouting("car", BigDecimal("200"))
+        val mp3player = ShopProductRouting("mp3player", BigDecimal("50"))
 
         basket ! Request(1,Purchase(tv))
         basket ! Request(2,Purchase(pc))
@@ -57,9 +57,9 @@ class RoutersPart3StickyShopBasketExerciseSpec extends TestKit(ActorSystem()) wi
         basket ! Request(3,ListProducts)
 
         import scala.collection._
-        expectMsg(Some(immutable.Seq(tv)))
-        expectMsg(Some(immutable.Seq(pc,car)))
-        expectMsg(Some(immutable.Seq(book, mp3player)))
+        expectMsg(Response(200,Some(immutable.Seq(tv))))
+        expectMsg(Response(200,Some(immutable.Seq(pc,car))))
+        expectMsg(Response(200,Some(immutable.Seq(book, mp3player))))
 
       }
     }

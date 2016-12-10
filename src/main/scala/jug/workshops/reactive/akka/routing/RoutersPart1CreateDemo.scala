@@ -10,7 +10,7 @@ object RoutersPart1CreateDemo {
 
   def main(args: Array[String]): Unit = {
     println("*** CREATING ROUTERS ***")
-    //This is how you cna pass custom config to an actor system - open this config
+    //This is how you can pass custom config to an actor system - open this config
     val demoConfig = ConfigFactory.load("routers/routersdemo")
     val system=ActorSystem("routers",demoConfig)
 
