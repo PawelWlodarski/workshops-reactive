@@ -6,8 +6,8 @@ import akka.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
 object RoutersPart3ProtocolTransmissionExercise {
 
   object TransmissionBit {
-    def bitToString(bit: Seq[TransmissionBit]): String =
-      bit.map(_.toText).mkString
+    def bitsToString(bits: Seq[TransmissionBit]): String =
+      bits.map(_.toText).mkString
   }
 
   sealed trait TransmissionBit {

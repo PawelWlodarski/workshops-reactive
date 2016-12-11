@@ -34,7 +34,7 @@ object RoutersPart4DynamicRouterDemo {
           println(s"sending $time")
           workers ! time
           workers ! GetRoutees
-          TimeUnit.MILLISECONDS.sleep(time)
+          TimeUnit.MILLISECONDS.sleep(time)  //sequencial message processing in logs is a consequence of blocking operation
         }
       case routes:Routees =>
         println(s"current number of routes" + routes.routees.length)
