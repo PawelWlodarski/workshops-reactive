@@ -11,13 +11,13 @@ import org.scalatest.{MustMatchers, WordSpecLike}
 import scala.util.{Success, Try}
 
 
-class StreamsIntro2LogsExerciseSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
+class StreamsIntroExercise2LogsSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender {
 
   implicit val materializer = ActorMaterializer()
 
 
-  import StreamsIntro2LogsExercise._
+  import StreamsIntroExercise2Logs._
 
   "Logs exercise " should {
     "properly initiate two flows" in {

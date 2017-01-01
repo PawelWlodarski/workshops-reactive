@@ -12,7 +12,7 @@ import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.duration._
 
-object StreamsIntroExercise2DatabaseFlowExercise {
+object StreamsIntroExercise2DatabaseFlow {
   object StreamExerciseDomain{
     case class Email(value:String) extends AnyVal
   }

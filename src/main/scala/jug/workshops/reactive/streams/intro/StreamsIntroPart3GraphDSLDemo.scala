@@ -7,7 +7,7 @@ import akka.stream.{ActorMaterializer, FlowShape}
 
 import scala.concurrent.{Await, Future}
 
-object StreamsPart3GraphDSLDemo {
+object StreamsIntroPart3GraphDSLDemo {
 
   def main(args: Array[String]): Unit = {
 

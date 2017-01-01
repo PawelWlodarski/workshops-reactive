@@ -8,7 +8,7 @@ import akka.stream.scaladsl.{Flow, Source, SourceQueueWithComplete}
 
 import scala.util.{Success, Try}
 
-object StreamsIntro2LogsExercise {
+object StreamsIntroExercise2Logs {
 
 
   val debugSource: Source[String, SourceQueueWithComplete[String]] = ???

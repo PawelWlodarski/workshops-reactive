@@ -12,12 +12,12 @@ import org.scalatest.{MustMatchers, WordSpecLike}
 
 import scala.concurrent.{Await, Future}
 
-class StreamsIntroExercise2DatabaseFlowExerciseSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
+class StreamsIntroExercise2DatabaseFlowSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender {
 
-  import StreamsIntroExercise2DatabaseFlowExercise.DatabaseUserStreams._
-  import StreamsIntroExercise2DatabaseFlowExercise.StreamExerciseDomain._
-  import StreamsIntroExercise2DatabaseFlowExercise._
+  import StreamsIntroExercise2DatabaseFlow.DatabaseUserStreams._
+  import StreamsIntroExercise2DatabaseFlow.StreamExerciseDomain._
+  import StreamsIntroExercise2DatabaseFlow._
 
   import scala.concurrent.duration._
 
