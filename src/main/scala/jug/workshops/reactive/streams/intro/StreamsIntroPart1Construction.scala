@@ -10,7 +10,7 @@ import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.Future
 
-object StreamsIntroPart1Basics {
+object StreamsIntroPart1Construction {
   def main(args: Array[String]): Unit = {
 
     println("*** Akka Streams Intro ***")
