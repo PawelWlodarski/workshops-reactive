@@ -21,7 +21,7 @@ class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("s
 
   "Exercise 1 Stream" should {
 
-
+//http://doc.akka.io/docs/akka/2.4/scala/stream/stream-testkit.html
     "create source with number candidates" in {
       source1
         .runWith(TestSink.probe)
@@ -61,20 +61,22 @@ class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("s
   }
 
   import StreamsIntroExercise1StreamConstruction.Exercise2._
-
+//http://doc.akka.io/docs/akka/2.4/scala/stream/stream-testkit.html
   "Exercise 2 Stream" should {
     "create source with future result" in {
       source2
         .runWith(TestSink.probe)
-        .request(???)
+        .request(???)  //expect 3 elements
         .expectNext(
-          ???,???,???
+          ???,???,???   //you should receive all products from source2
         )
         .expectComplete()
     }
 
     //uncomment and make it compile and pass
 //    "extract prices from product" in {
+//    //use flow2 from StreamsIntroExercise1StreamConstruction here
+//    // flow.runWith(source,sink)  <--- use here test sink and test source with proper types
 //      val (pub: akka.stream.testkit.TestPublisher.Probe[Product],
 //          sub: akka.stream.testkit.TestSubscriber.Probe[BigDecimal]) = ???
 //
@@ -84,7 +86,7 @@ class StreamsIntroExercise1StreamConstructionSpec extends TestKit(ActorSystem("s
 //
 //      sub.expectNext(BigDecimal(20),BigDecimal(120))
 //    }
-
+//you need to finish implementation in StreamsIntroExercise1StreamConstruction - don't change test
     "sum all prices" in {
       val probe=TestProbe()
 

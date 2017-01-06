@@ -21,7 +21,7 @@ object StreamsIntroPart1Materializers {
     val flow=Flow[Int].map(_+1)
     val sink: Sink[Int, Future[Int]] = Sink.fold(0)(_+_)
 
-    //DIFFERENT MATERIALIZEr OPTIONS
+    //DIFFERENT MATERIALIZERS OPTIONS
     val p1: Source[Int, ActorRef] =source.via(flow)
     val p2: Source[Int, NotUsed] =source.viaMat(flow)(Keep.none)
     val p3: Source[Int, NotUsed] = source.viaMat(flow)(Keep.right)
@@ -46,7 +46,7 @@ object StreamsIntroPart1Materializers {
 
     val result=Await.result(future,1 second)
     println(s"fold result $result")
-
+// LATER : MATERIALIZERS ALLOW TO MATERIALIZE TEST SOURCE AND SINK
     system.terminate()
 
   }

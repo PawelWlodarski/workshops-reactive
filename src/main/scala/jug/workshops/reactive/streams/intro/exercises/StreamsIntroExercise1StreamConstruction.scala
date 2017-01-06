@@ -17,11 +17,11 @@ object StreamsIntroExercise1StreamConstruction {
     //Exercise 1 :
     val numberCandidates: List[String] = List("1", "2", "c", "4", "e", "6", "g", "h", "9")
     //explain why list not iterable
-    val source1: Source[String, NotUsed] = ???
+    val source1: Source[String, NotUsed] = ??? //initiate with list
 
-    val flow1: Flow[String, Int, NotUsed] = ???
+    val flow1: Flow[String, Int, NotUsed] = ???   //filter out non-numbers and convert to int
 
-    val sink1: Sink[Int, Future[Int]] = ???
+    val sink1: Sink[Int, Future[Int]] = ???   //use Sink.reduce or Sink.fold
 
     val exercise1: RunnableGraph[Future[Int]] = source1.via(flow1).toMat(sink1)(Keep.right)
   }
@@ -30,7 +30,7 @@ object StreamsIntroExercise1StreamConstruction {
     //Exercise2
     case class Product(id: Int, name: String, price: BigDecimal)
 
-    //explain this type  and how List can help
+    //explain this type  and how List can help  //http://hseeberger.github.io/blog/2013/10/25/attention-seq-is-not-immutable/
     type Iterable[A] = scala.collection.immutable.Iterable[A]
 
     private object Database {
@@ -66,6 +66,7 @@ object StreamsIntroExercise1StreamConstruction {
       case object Exercise2Completed
     }
 
+    //when stream is completed forward state to receiver
     class SumAllPricesActor(receiver:ActorRef) extends Actor{
       import SumAllPricesActor._
 
@@ -94,7 +95,7 @@ object StreamsIntroExercise1StreamConstruction {
     class SumAllPricesActorWithAck(receiver:ActorRef) extends Actor{
 
       var state=BigDecimal(0)
-
+//handle possible messages Exercise3Init -> Exercise3Ack , BigInt -> ModifyState , Exercise3Complete -> forward state
       override def receive: Receive = {
         case _ => ???
       }
