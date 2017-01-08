@@ -52,7 +52,7 @@ class StreamsIntroExercise3GraphDSLSpecAnswer extends TestKit(ActorSystem("strea
   }
 
 
-  //EXERCISE2
+  //EXERCISE2 - Explain imported sink
   "sink create from graph" should "zip inputs" in {
     var history = List[(String,Int)]()
     val elementsToEmit = List("one", "two", "three")

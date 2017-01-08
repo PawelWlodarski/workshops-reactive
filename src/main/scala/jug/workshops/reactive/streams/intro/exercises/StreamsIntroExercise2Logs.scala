@@ -19,7 +19,7 @@ object StreamsIntroExercise2Logs {
 
   //What is the advantage of currying here?
   object LogsInterpreter{
-      def content(pattern:String)(s:String) = ???
+      def content(pattern:String)(s:String): Try[String] = ???
   }
 
   class LogsIntoStreamsRouter(debugs:SourceQueue[String], errors:SourceQueue[String]) extends Actor{

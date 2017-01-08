@@ -23,7 +23,7 @@ object StreamsIntroExercise2DatabaseFlow {
   //SOURCE - create queue to offer IDs
   val source: Source[Id, SourceQueueWithComplete[Id]] = ???
 
-  //flow read database record and extract email
+  //flow read database record and extract email,  check what type "read" returns
   val flow: Flow[Id, Email, NotUsed] = ???
 
   //send an email
