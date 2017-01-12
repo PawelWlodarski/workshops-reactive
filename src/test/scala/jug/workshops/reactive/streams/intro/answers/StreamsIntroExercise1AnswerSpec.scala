@@ -8,8 +8,6 @@ import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import common.StopSystemAfterAll
 import org.scalatest.{MustMatchers, WordSpecLike}
 
-import jug.workshops.reactive.streams.intro.exercises.StreamsIntroExercise1StreamConstruction
-
 import scala.concurrent.{Await, Future}
 
 /**
@@ -18,11 +16,11 @@ import scala.concurrent.{Await, Future}
 class StreamsIntroExercise1AnswerSpec extends TestKit(ActorSystem("streams")) with WordSpecLike
   with MustMatchers with StopSystemAfterAll with ImplicitSender{
 
-  import StreamsIntroExercise1StreamConstruction.Exercise1._
-  import StreamsIntroExercise1StreamConstruction.Exercise2._
-  import StreamsIntroExercise1StreamConstruction.Exercise2.SumAllPricesActor._
-  import StreamsIntroExercise1StreamConstruction.Exercise3._
-  import StreamsIntroExercise1StreamConstruction.Exercise3.SumAllPricesActorWithAck._
+  import StreamsIntroExercise1StreamConstructionAnswer.Exercise1._
+  import StreamsIntroExercise1StreamConstructionAnswer.Exercise2.SumAllPricesActor._
+  import StreamsIntroExercise1StreamConstructionAnswer.Exercise2._
+  import StreamsIntroExercise1StreamConstructionAnswer.Exercise3.SumAllPricesActorWithAck._
+  import StreamsIntroExercise1StreamConstructionAnswer.Exercise3._
 
   implicit val materializer = ActorMaterializer()
 
