@@ -4,7 +4,7 @@ version := "1.0"
 
 scalaVersion := "2.11.8"
 
-lazy val akkaVersion = "2.4.12"
+lazy val akkaVersion = "2.5.2"
 
 val akka="com.typesafe.akka" %% "akka-actor" % akkaVersion
 val akkaTest="com.typesafe.akka" %% "akka-testkit" % akkaVersion

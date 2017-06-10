@@ -75,7 +75,7 @@ class RoutersConfigurationSpecAnswer extends TestKit(RoutersConfiguration.testSy
 object RoutersConfiguration {
 
   def testSystem: ActorSystem = {
-    val demoConfig = ConfigFactory.load("routers/answer")
+    val demoConfig = ConfigFactory.load("routers/routersanswer")
     ActorSystem("routersExercise", demoConfig)
   }
 
