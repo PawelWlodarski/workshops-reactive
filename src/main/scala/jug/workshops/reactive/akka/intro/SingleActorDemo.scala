@@ -17,15 +17,12 @@ object SingleActorDemo extends WorkshopDisplayer{
     //Actorsystem is a factory for an actor
     val system=ActorSystem("intro")
 
+    appendToActor(system)
     unhandledExample(system)
     system.terminate()
   }
 
-  //how actor serialize access to state - spawn multiple threads
-  //untyped -> location transparency
-  //why messages has to be immutable
-  //receive - partial function[Any,Unit] why?
-  //dead letter actors
+
 
   private def appendToStandardClass() = {
     val instance = new StandardClass
@@ -40,14 +37,24 @@ object SingleActorDemo extends WorkshopDisplayer{
   }
 
   private def appendToActor(system:ActorSystem) = {
+    import SomeActor._
     //factory argument - props factory in companion object
     val props=Props[SomeActor]
 
     //factory invocation - why ActorRef and not object instance?
     val actor:ActorRef=system.actorOf(props)
+    (1 to 30).par.foreach { e =>
+      actor ! Append(e)
+    }
+
+    TimeUnit.MILLISECONDS.sleep(100)
+
+    actor ! Display  // when instance stats will be displayed
+    section("actor state")
 
   }
   def unhandledExample(system:ActorSystem): Unit = {
+      section("unhandled example")
       val deafActor=system.actorOf(DeafActor.props)
       deafActor ! "aaaa"
       deafActor ! 69
@@ -61,6 +68,7 @@ class SomeActor extends Actor {
 
   var state=List.empty[Int]
 
+  //why messages has to be immutable
   override def receive: Receive = {
     case Append(i) => state = state :+ i
     case Display => println("Actor : " + state.mkString(","))
@@ -85,7 +93,7 @@ class StandardClass {
 
 class DeafActor extends Actor{
   val log=Logging(context.system,"identifier")  //why context? logging is blocking
-  override def receive: Receive = PartialFunction.empty[Any,Unit]
+  override def receive: Receive = PartialFunction.empty[Any,Unit] //location transparency
 
   override def unhandled(message: Any): Unit = message match{
     case msg:String => log.info(s"unhandled $msg")
