@@ -20,6 +20,8 @@ object SingleActorDemo extends WorkshopDisplayer{
     appendToActor(system)
     unhandledExample(system)
     system.terminate()
+    //Display threads
+    //SHOw Single Actor Test
   }
 
 
@@ -27,6 +29,7 @@ object SingleActorDemo extends WorkshopDisplayer{
   private def appendToStandardClass() = {
     val instance = new StandardClass
     (1 to 30).par.foreach { e =>
+//      println("appendToStandardClass : "+Thread.currentThread().getName)
       instance.append(e)
     }
 
@@ -42,7 +45,7 @@ object SingleActorDemo extends WorkshopDisplayer{
     val props=Props[SomeActor]
 
     //factory invocation - why ActorRef and not object instance?
-    val actor:ActorRef=system.actorOf(props)
+    val actor:ActorRef=system.actorOf(props,"AlwaysNameActors!!!")
     (1 to 30).par.foreach { e =>
       actor ! Append(e)
     }
@@ -55,7 +58,7 @@ object SingleActorDemo extends WorkshopDisplayer{
   }
   def unhandledExample(system:ActorSystem): Unit = {
       section("unhandled example")
-      val deafActor=system.actorOf(DeafActor.props)
+      val deafActor=system.actorOf(DeafActor.props,"UnhadledExampleActor")
       deafActor ! "aaaa"
       deafActor ! 69
       TimeUnit.SECONDS.sleep(1)
@@ -70,7 +73,9 @@ class SomeActor extends Actor {
 
   //why messages has to be immutable
   override def receive: Receive = {
-    case Append(i) => state = state :+ i
+    case Append(i) =>
+//      println("insideActor : "+Thread.currentThread().getName)
+      state = state :+ i
     case Display => println("Actor : " + state.mkString(","))
   }
 }
