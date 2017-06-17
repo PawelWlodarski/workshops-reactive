@@ -1,19 +1,16 @@
 package jug.workshops.reactive.akka.intro
-
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
+import Switch._
+import akka.actor.{Actor, ActorLogging, ActorSystem, Props, Stash}
 
-import scala.concurrent.duration.FiniteDuration
-
-object ActorStateDemo {
-
+object StashDemo {
 
   def main(args: Array[String]): Unit = {
     val system=ActorSystem("actor_state")
     import Switch._
 
-    val switch = system.actorOf(Props[Switch])
+    val switch = system.actorOf(Props[SwitchWithStash])
 
     //Is there a situation where messages will be reordered?
     switch ! Message("msg1")
@@ -32,13 +29,12 @@ object ActorStateDemo {
     system.terminate()
   }
 
-  //stash
-  //circuit breaker
 }
 
-import Switch._
 
-class Switch extends Actor with ActorLogging{
+import scala.concurrent.duration.FiniteDuration
+
+class SwitchWithStash extends Actor with ActorLogging with Stash{
   override def receive: Receive = waitingForInitialization
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,8 +42,13 @@ class Switch extends Actor with ActorLogging{
   context.system.scheduler.scheduleOnce(FiniteDuration(1,"s"),self,Initialized)
 
   val waitingForInitialization : Receive = {
-    case Initialized => context.become(initialized)
-    case msg => log.warning(s"received message while uninitialized $msg")
+    case Initialized =>
+      context.become(initialized)
+      log.info("unstashing")
+      unstashAll()
+    case msg =>
+      stash()
+      log.warning(s"received message while uninitialized $msg")
   }
 
   val initialized : Receive = {
@@ -57,11 +58,9 @@ class Switch extends Actor with ActorLogging{
 
 }
 
-object Switch {
+object SwitchWithStash {
   private[intro] case object Initialized
   case class Message(content:String)
 
   def sleep(n:Int) = TimeUnit.MILLISECONDS.sleep(n)
 }
-
-//switch with stash
