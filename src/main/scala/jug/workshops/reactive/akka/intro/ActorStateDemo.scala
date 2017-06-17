@@ -32,8 +32,6 @@ object ActorStateDemo {
     system.terminate()
   }
 
-  //stash
-  //circuit breaker
 }
 
 import Switch._
