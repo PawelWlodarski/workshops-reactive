@@ -1,23 +1,24 @@
-package jug.workshops.reactive.akka.intro.answers
+package jug.workshops.reactive.akka.intro.exercises
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{Actor, ActorSystem, Props, Stash}
+import akka.actor.{Actor, ActorSystem, Cancellable, Props, Stash}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import org.scalatest.{MustMatchers, WordSpecLike}
 
 import scala.concurrent.duration.FiniteDuration
 import scala.util.{Failure, Success, Try}
 
-class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecLike with MustMatchers with ImplicitSender{
+class CircuitBreakerExercises extends TestKit(ActorSystem("test")) with  WordSpecLike with MustMatchers with ImplicitSender{
 
-  import CircuitBreaker._
+  import CircuitBreakerExercise._
 
 
+  //First test send 5 messages to circuit breaker. First 4 switches circuit breaker into Open state
   "Circuit breaker" should {
     "open circuit when there are more than 3 failures" in {
       val db=new CircuitBreakerMockDatabase
-      val props=Props(new CircuitBreaker(db))
+      val props=Props(new CircuitBreakerExercise(db))
       val circuitBreaker=system.actorOf(props, "exercise1Breaker")
 
       circuitBreaker ! Read("m1")
@@ -36,16 +37,19 @@ class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecL
       expectMsg(CircuitOpen)
     }
 
+    //when circuit breaker becomes open it should schedule close in no more than 2 seconds
     "schedule circuit close in two seconds" in {
       val db=new CircuitBreakerMockDatabase
-      val props=Props(new CircuitBreaker(db))
+      val props=Props(new CircuitBreakerExercise(db))
       val circuitBreaker=system.actorOf(props, "exercise2Breaker")
 
+      //Explain parallel collection
       (1 to 5).map(i=>Read(s"m$i")).par.foreach{message =>
         println(s"thread : ${Thread.currentThread().getName} sending $message")
         circuitBreaker ! message
       }
 
+      //explain fish for messages
       fishForMessage(FiniteDuration(3,"s"),hint = "wait for circuit open"){
         case CircuitOpen => true
         case _ => false
@@ -58,13 +62,14 @@ class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecL
 
     }
 
+    //use stash to save all messages received by CB when it was open
     "stash all messages when circuit is open and unstash all when it is closed again" in {
       val db=new CircuitBreakerMockDatabase
-      val props=Props(new CircuitBreaker(db))
+      val props=Props(new CircuitBreakerExercise(db))
       val circuitBreaker=system.actorOf(props, "exercise3Breaker")
 
       (1 to 5).map(i=>Read(s"m$i")).foreach{message =>
-        println(s"thread : ${Thread.currentThread().getName} sending $message")
+//        println(s"thread : ${Thread.currentThread().getName} sending $message")
         circuitBreaker ! message
       }
 
@@ -79,7 +84,8 @@ class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecL
   }
 }
 
-object CircuitBreaker{
+//All messages are prepared
+object CircuitBreakerExercise{
   case class Read(input:String)
   sealed trait ReadResult
   case class ReadSuccess(s:String) extends ReadResult
@@ -91,49 +97,39 @@ object CircuitBreaker{
 
 }
 
-import CircuitBreaker._
+import CircuitBreakerExercise._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CircuitBreaker(db:CircuitBreakerDatabase) extends Actor with Stash{
+class CircuitBreakerExercise(db:CircuitBreakerDatabase) extends Actor with Stash{
+  //we are starting from circuit closed
   override def receive: Receive = circuitClose
 
   val ALLOWED_FAILURES=3
   var failures = 0
 
   def circuitClose:Receive = {
-    case Read(input) =>
-      reactOnDb{
-        db.read(input).map(ReadSuccess.apply)
-      }
-
-      if(failures>ALLOWED_FAILURES) {
-        context.become(circuitOpen)
-        failures=0
-        scheduleCircuitClose()
-      }
+    // * react on Read message
+    //  * read from db
+    //    * if read was successful -> send response to sender
+    //    * if read was not successful -> send failure to sender and increase failure counter
+    //    * if number of failures is larger than ALLOWED_FAILURES -> open circuit
+    //    * EXERCISE 2 - schedule close of circuit in no more than 2 seconds
+    ???
   }
 
-  def circuitOpen:Receive = {
-    case CloseCircuit =>
-      context.become(circuitClose)
-      unstashAll()
-    case _ =>
-      sender ! CircuitOpen
-      stash()
-  }
+  //When circuit is in closed state
+  // * react on CloseCircuit by context.become and switching to closed circuit
+  //   * EXERCISE 3 - unstash all messages
+  // * react on other messages
+  //    * by sending CircuitOpen message to sender
+  //    * EXERCISE 3 - stash message
+  def circuitOpen:Receive = ???
 
-  def reactOnDb: PartialFunction[Try[ReadResult],Unit] = {
-    case Success(i) => sender ! i
-    case Failure(e) =>
-      sender() ! ReadFailure(e.asInstanceOf[Exception])
-      failures=failures+1
-  }
-
-  def scheduleCircuitClose() = {
-    context.system.scheduler.scheduleOnce(FiniteDuration(1,"s"),self,CloseCircuit)
-  }
+  // EXERCISE2  - schedule circuit close
+  def scheduleCircuitClose() = ???
 }
 
+//DON'T CHANGE DATABASE. Mock Database fill fail first 4 reads
 trait CircuitBreakerDatabase{
   def read(input:String): Try[String]
 }
