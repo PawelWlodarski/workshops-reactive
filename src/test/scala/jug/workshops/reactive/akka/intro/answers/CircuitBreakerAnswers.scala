@@ -1,5 +1,7 @@
 package jug.workshops.reactive.akka.intro.answers
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor.{Actor, ActorSystem, Props, Stash}
 import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import org.scalatest.{MustMatchers, WordSpecLike}
@@ -16,7 +18,7 @@ class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecL
     "open circuit when there are more than 3 failures" in {
       val db=new CircuitBreakerMockDatabase
       val props=Props(new CircuitBreakerExercise(db))
-      val circuitBreaker=system.actorOf(props)
+      val circuitBreaker=system.actorOf(props, "exercise1Breaker")
 
       circuitBreaker ! Read("m1")
       expectMsgClass(classOf[ReadFailure])
@@ -37,7 +39,7 @@ class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecL
     "schedule circuit close in two seconds" in {
       val db=new CircuitBreakerMockDatabase
       val props=Props(new CircuitBreakerExercise(db))
-      val circuitBreaker=system.actorOf(props)
+      val circuitBreaker=system.actorOf(props, "exercise2Breaker")
 
       (1 to 5).map(i=>Read(s"m$i")).foreach(circuitBreaker ! _)
 
@@ -45,12 +47,31 @@ class CircuitBreakerAnswers extends TestKit(ActorSystem("test")) with  WordSpecL
         case CircuitOpen => true
         case _ => false
       }
-      println("open")
+
+      TimeUnit.SECONDS.sleep(2) // for educational purposes
+      val probe=TestProbe()
+      circuitBreaker.tell(Read("m6"),probe.ref)
+      probe.expectMsg(ReadSuccess("read : m6"))
+
+    }
+
+    "stash all messages when circuit is open and unstash all when it is closed again" in {
+      val db=new CircuitBreakerMockDatabase
+      val props=Props(new CircuitBreakerExercise(db))
+      val circuitBreaker=system.actorOf(props, "exercise3Breaker")
+
+      (1 to 5).map(i=>Read(s"m$i")).foreach(circuitBreaker ! _)
+
+
+      fishForMessage(FiniteDuration(3,"s"),hint = "wait for circuit open"){
+        case CircuitOpen => true
+        case _ => false
+      }
+
+      expectMsg(ReadSuccess("read : m5"))
 
     }
   }
-
-
 }
 
 object CircuitBreakerExercise{
@@ -82,6 +103,7 @@ class CircuitBreakerExercise(db:CircuitBreakerDatabase) extends Actor with Stash
 
       if(failures>ALLOWED_FAILURES) {
         context.become(circuitOpen)
+        failures=0
         scheduleCircuitClose()
       }
   }
@@ -103,7 +125,7 @@ class CircuitBreakerExercise(db:CircuitBreakerDatabase) extends Actor with Stash
   }
 
   def scheduleCircuitClose() = {
-    context.system.scheduler.scheduleOnce(FiniteDuration(2,"s"),self,CloseCircuit)
+    context.system.scheduler.scheduleOnce(FiniteDuration(1,"s"),self,CloseCircuit)
   }
 }
 
@@ -114,6 +136,8 @@ trait CircuitBreakerDatabase{
 class CircuitBreakerMockDatabase extends CircuitBreakerDatabase{
   var readAttempts=0
 
-  override def read(input:String): Try[String] =
+  override def read(input:String): Try[String] ={
+    readAttempts=readAttempts+1
     if(readAttempts > 4) Success(s"read : $input") else Failure(new RuntimeException("error"))
+  }
 }
