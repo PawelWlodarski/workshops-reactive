@@ -10,6 +10,7 @@ object Librarian {
   import RareBooksProtocol._
 
   final case class Done(e: Either[BookNotFound,BookFound], customer:ActorRef)
+  final case class ComplainException(c: Complain, customer: ActorRef) extends IllegalStateException("Too many complaints!")
 
   private def optToEither[T](v: T, f: T => Option[List[BookCard]]): Either[BookNotFound, BookFound] =
     f(v) match {
@@ -29,14 +30,17 @@ object Librarian {
   private def findByTopic(fb: FindBookByTopic) =
     optToEither[Set[Topic]](fb.topic, findBookByTopic)
 
-  def props(findBookDuration: FiniteDuration): Props = Props(new Librarian(findBookDuration))
+  def props(findBookDuration: FiniteDuration,maxComplains:Int): Props = Props(new Librarian(findBookDuration,maxComplains))
 }
 
-class Librarian(findBookDuration: FiniteDuration) extends Actor with ActorLogging with Stash {
+class Librarian(findBookDuration: FiniteDuration,maxComplainCount:Int) extends Actor with ActorLogging with Stash {
 
   import context.dispatcher
   import Librarian._
   import RareBooksProtocol._
+
+  private var complainCount=0
+
 
   override def receive: Receive = ready
 
@@ -44,7 +48,10 @@ class Librarian(findBookDuration: FiniteDuration) extends Actor with ActorLoggin
 
   private def ready: Receive = {
     case m: Msg => m match {
+      case c: Complain if complainCount== maxComplainCount=>
+        throw ComplainException(c,sender())
       case _: Complain =>
+        complainCount=complainCount+1
         sender ! Credit()
         log.info(s"Credit issued to customer $sender()")
       case f: FindBookByIsbn =>

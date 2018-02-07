@@ -1,8 +1,10 @@
 package jug.workshops.poligon.reactivedevelopment.bookscatalog
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props, Stash}
+import akka.actor.{Actor, ActorLogging, ActorRef, OneForOneStrategy, Props, Stash, SupervisorStrategy}
 
 import scala.concurrent.duration.{Duration, FiniteDuration, MILLISECONDS => Millis}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object RareBooks {
 
@@ -21,6 +23,17 @@ class RareBooks extends Actor with ActorLogging with Stash {
   import RareBooksProtocol._
 
   context.system.scheduler.scheduleOnce(openDuration, self, Close)
+
+
+  override def supervisorStrategy: SupervisorStrategy = {
+    val decider:SupervisorStrategy.Decider = {
+      case Librarian.ComplainException(complain,customer) =>
+        customer ! Credit()
+        SupervisorStrategy.restart
+    }
+
+    OneForOneStrategy()(decider orElse super.supervisorStrategy.decider)
+  }
 
   override def receive: Receive = open
 
@@ -64,5 +77,5 @@ class RareBooks extends Actor with ActorLogging with Stash {
     Duration(context.system.settings.config.getDuration("rare-books.librarian.find-book-duration", Millis), Millis)
 
   protected def createLibrarian(): ActorRef =
-    context.actorOf(Librarian.props(findBookDuration))
+    context.actorOf(Librarian.props(findBookDuration,3))
 }

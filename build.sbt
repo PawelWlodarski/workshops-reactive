@@ -4,14 +4,14 @@ version := "1.0"
 
 scalaVersion := "2.12.4"
 
-lazy val akkaVersion = "2.5.8"
+lazy val akkaVersion = "2.5.9"
 
 val akka="com.typesafe.akka" %% "akka-actor" % akkaVersion
 val akkaTest="com.typesafe.akka" %% "akka-testkit" % akkaVersion
 val akkaStream="com.typesafe.akka" %% "akka-stream" % akkaVersion
 val akkaStreamTestKit="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
 val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
-val akkaTyped="com.typesafe.akka" %% "akka-typed" % akkaVersion
+val akkaTyped="com.typesafe.akka" %% "akka-typed" % "2.5.8"
 
 val cats = "org.typelevel" %% "cats-core" % "1.0.1"
 
