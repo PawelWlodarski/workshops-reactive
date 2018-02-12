@@ -1,4 +1,4 @@
-package jug.workshops.poligon.routers
+package jug.workshops.poligon.typed.routers
 
 import akka.typed.Behavior
 import akka.typed.scaladsl.Actor
