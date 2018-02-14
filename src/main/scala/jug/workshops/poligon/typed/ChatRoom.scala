@@ -49,6 +49,7 @@ object ChatRoom {
       case MessagePosted(screenName,message) =>
         println(s"message has been posted by '$screenName': $message")
         Actor.stopped
+      case unsupported => throw new RuntimeException(s"received $unsupported")
     }
   }
 
