@@ -2,10 +2,10 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.TimeUnit
 
-import akka.typed.receptionist.Receptionist
-import akka.typed.{ActorRef, ActorSystem, Behavior, Terminated}
-import akka.typed.receptionist.Receptionist.{Listing, ServiceKey, Subscribe}
-import akka.typed.scaladsl.Actor
+import akka.actor.typed.receptionist.{Receptionist, ServiceKey}
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Terminated}
+import akka.actor.typed.receptionist.Receptionist.{Listing, Subscribe}
+import akka.actor.typed.scaladsl.Actor
 
 object DiscoveryTyped {
 

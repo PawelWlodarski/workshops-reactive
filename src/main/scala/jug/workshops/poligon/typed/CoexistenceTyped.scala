@@ -2,14 +2,14 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.TimeUnit
 
-import akka.typed.{Behavior, Terminated}
-import akka.typed.scaladsl.Actor
+import akka.actor.typed.{Behavior, Terminated}
+import akka.actor.typed.scaladsl.Actor
 
 
 object CoexistenceTyped {
 
   import MyTyped1._
-  import akka.typed.scaladsl.adapter._
+  import akka.actor.typed.scaladsl.adapter._
 
   def main(args: Array[String]): Unit = {
 //    exampleOne()
@@ -25,7 +25,7 @@ object CoexistenceTyped {
   }
 
   private def exampleTwo() = {
-    import akka.typed.scaladsl.adapter._
+    import akka.actor.typed.scaladsl.adapter._
     val system = akka.actor.ActorSystem("sys")
     system.spawn(MyTyped2.behavior, "first")
     TimeUnit.SECONDS.sleep(1)
@@ -38,7 +38,7 @@ object CoexistenceTyped {
 
   class MyUntyped1 extends akka.actor.Actor {
 
-    val second: akka.typed.ActorRef[Command] = context.spawn(MyTyped1.behavior, "second")
+    val second: akka.actor.typed.ActorRef[Command] = context.spawn(MyTyped1.behavior, "second")
 
     context.watch(second)
 
@@ -57,11 +57,11 @@ object CoexistenceTyped {
 
     sealed trait Command
 
-    final case class Ping(replyTo: akka.typed.ActorRef[Pong.type]) extends Command
+    final case class Ping(replyTo: akka.actor.typed.ActorRef[Pong.type]) extends Command
 
     case object Pong
 
-    val behavior: Behavior[Command] = akka.typed.scaladsl.Actor.immutable { (ctx, msg) =>
+    val behavior: Behavior[Command] = akka.actor.typed.scaladsl.Actor.immutable { (ctx, msg) =>
       msg match {
         case Ping(replyTo) =>
           println(s"${ctx.self} got Ping from $replyTo")
@@ -74,7 +74,7 @@ object CoexistenceTyped {
 
 
   object MyTyped2 {
-    final case class Ping2(replyTo: akka.typed.ActorRef[Pong2.type])
+    final case class Ping2(replyTo: akka.actor.typed.ActorRef[Pong2.type])
     sealed trait Command2
     case object Pong2 extends Command2
 

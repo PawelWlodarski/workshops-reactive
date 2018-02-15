@@ -1,7 +1,7 @@
 package jug.workshops.poligon.typed
 
-import akka.typed.scaladsl.Actor
-import akka.typed.{ActorRef, ActorSystem, Behavior, Terminated}
+import akka.actor.typed.scaladsl.Actor
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Terminated}
 
 import scala.concurrent.Await
 

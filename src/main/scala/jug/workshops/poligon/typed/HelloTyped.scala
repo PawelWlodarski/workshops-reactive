@@ -2,9 +2,9 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.TimeUnit
 
-import akka.typed.{ActorRef, ActorSystem, Behavior}
-import akka.typed.scaladsl.Actor
-import akka.typed.scaladsl.AskPattern._
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.scaladsl.Actor
+import akka.actor.typed.scaladsl.AskPattern._
 import akka.util.Timeout
 
 import scala.concurrent.Future

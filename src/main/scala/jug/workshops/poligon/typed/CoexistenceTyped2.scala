@@ -3,10 +3,10 @@ package jug.workshops.poligon.typed
 import java.util.concurrent.TimeUnit
 
 import akka.actor.Props
-import akka.typed.scaladsl.Actor
-import akka.typed.{ActorRef, Behavior}
+import akka.actor.typed.scaladsl.Actor
+import akka.actor.typed.{ActorRef, Behavior}
 
-import akka.typed.scaladsl.adapter._
+import akka.actor.typed.scaladsl.adapter._
 
 object CoexistenceTyped2 {
 
@@ -96,7 +96,7 @@ object CoexistenceTyped2 {
           ctx.stop(untyped)
           Actor.same
       } onSignal {
-        case (_, akka.typed.Terminated(_)) =>
+        case (_, akka.actor.typed.Terminated(_)) =>
           println("stopping typed")
           Actor.stopped
       }
