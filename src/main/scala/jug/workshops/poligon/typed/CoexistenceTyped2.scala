@@ -3,10 +3,9 @@ package jug.workshops.poligon.typed
 import java.util.concurrent.TimeUnit
 
 import akka.actor.Props
-import akka.actor.typed.scaladsl.Actor
-import akka.actor.typed.{ActorRef, Behavior}
-
+import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter._
+import akka.actor.typed.{ActorRef, Behavior}
 
 object CoexistenceTyped2 {
 
@@ -39,13 +38,13 @@ object CoexistenceTyped2 {
     case object Pong
 
 
-    val behavior: Behavior[Command] = Actor.immutable{ (ctx, msg) =>
+    val behavior: Behavior[Command] = Behaviors.immutable{ (ctx, msg) =>
       msg match {
         case Ping(replyTo) =>
           println(s"${ctx.self} got Ping from $replyTo")
           // replyTo is an untyped actor that has been converted for coexistence
           replyTo ! Pong
-          Actor.same
+          Behaviors.same
       }
     }
   }
@@ -85,20 +84,20 @@ object CoexistenceTyped2 {
 
 
 
-    val behavior:Behavior[Command2] = Actor.deferred{ctx =>
+    val behavior:Behavior[Command2] = Behaviors.setup{ctx =>
       val untyped = ctx.actorOf(Props[Untyped2],"second2")
       ctx.watch(untyped)
       untyped.tell(Ping2(ctx.self),ctx.self.toUntyped)
 
-      Actor.immutablePartial[Command2]{
+      Behaviors.immutablePartial[Command2]{
         case (ctx,Pong2) =>
           println("stoping untyped")
           ctx.stop(untyped)
-          Actor.same
+          Behaviors.same
       } onSignal {
         case (_, akka.actor.typed.Terminated(_)) =>
           println("stopping typed")
-          Actor.stopped
+          Behaviors.stopped
       }
     }
 

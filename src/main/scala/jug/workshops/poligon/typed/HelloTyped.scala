@@ -2,13 +2,13 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
-import akka.actor.typed.scaladsl.Actor
 import akka.actor.typed.scaladsl.AskPattern._
+import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.util.Timeout
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.duration._
 
 
@@ -29,10 +29,10 @@ object HelloTyped {
 
     final case class WhoToGreet(who: String) extends Command
 
-    val greeterBehaviour: Behavior[Command] = Actor.mutable[Command](ctx => new Greeter1)
+    val greeterBehaviour: Behavior[Command] = Behaviors.mutable[Command](ctx => new Greeter1)
   }
 
-  class Greeter1 extends Actor.MutableBehavior[Greeter1.Command] {
+  class Greeter1 extends Behaviors.MutableBehavior[Greeter1.Command] {
     import Greeter1._
     private var greeting = "hello"
 
@@ -56,13 +56,13 @@ object HelloTyped {
     val greeterBehaviour: Behavior[Command] = greeterBehavior(currentGreeting = "hello")
 
     private def greeterBehavior(currentGreeting: String): Behavior[Command] =
-      Actor.immutable[Command] { (ctx, msg) =>
+      Behaviors.immutable[Command] { (ctx, msg) =>
         msg match  {
           case WhoToGreet(who) =>
             greeterBehavior(s"hello, $who")
           case Greet =>
             println(currentGreeting)
-            Actor.same
+            Behaviors.same
         }
       }
   }
@@ -70,13 +70,13 @@ object HelloTyped {
   object Hello2 {
 
     def hello()= {
-      val root = Actor.deferred[Nothing]{ctx =>
+      val root = Behaviors.setup[Nothing]{ctx =>
         import Greeter2._
 
         val greeter:ActorRef[Command] = ctx.spawn(greeterBehaviour, "greeter")
         greeter ! WhoToGreet("World2")
         greeter ! Greet
-        Actor.empty
+        Behaviors.empty
       }
       val system = ActorSystem[Nothing](root,"HelloWorld")
       TimeUnit.SECONDS.sleep(1)
@@ -92,10 +92,10 @@ object HelloTyped {
     final case class Greeted(whom: String)
 
 
-    val greeter: Behavior[Greet] = Actor.immutable[Greet] { (_, msg) =>
+    val greeter: Behavior[Greet] = Behaviors.immutable[Greet] { (_, msg) =>
       println(s"Hello ${msg.whom}")
       msg.replyTo ! Greeted(msg.whom)
-      Actor.same
+      Behaviors.same
     }
 
     def hello1() = {

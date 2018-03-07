@@ -1,12 +1,11 @@
 package jug.workshops.poligon.typed
 
-import akka.actor.typed.scaladsl.Actor
+import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import akka.testkit.typed.TestKit
-import akka.testkit.typed.scaladsl.TestProbe
+import akka.testkit.typed.scaladsl.{ActorTestKit, TestProbe}
 import org.scalatest.{BeforeAndAfterAll, FunSuiteLike}
 
-class AsynchronousTypedTest extends TestKit("Basic_testing_spec") with FunSuiteLike with BeforeAndAfterAll{
+class AsynchronousTypedTest extends ActorTestKit with FunSuiteLike with BeforeAndAfterAll{
 
   import Protocol._
 
@@ -17,10 +16,10 @@ class AsynchronousTypedTest extends TestKit("Basic_testing_spec") with FunSuiteL
 
       pinger ! AsynTestPing("hello", probe.ref)
 
-      probe.expectMsg(AsynTestPong("hello"))
+      probe.expectMessage(AsynTestPong("hello"))
   }
 
-  override protected def afterAll(): Unit = shutdown()
+  override protected def afterAll(): Unit = shutdownTestKit()
 }
 
 object Protocol{
@@ -28,11 +27,11 @@ object Protocol{
   case class AsynTestPong(msg: String)
 
 
-  val echoActor: Behavior[AsynTestPing] = Actor.immutable[AsynTestPing]{ (_, msg)=>
+  val echoActor: Behavior[AsynTestPing] = Behaviors.immutable[AsynTestPing]{ (_, msg)=>
     msg match {
       case AsynTestPing(m,replyTo) =>
         replyTo ! AsynTestPong(m)
-        Actor.same
+        Behaviors.same
     }
   }
 }

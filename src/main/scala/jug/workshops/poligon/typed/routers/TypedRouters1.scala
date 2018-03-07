@@ -1,7 +1,7 @@
 package jug.workshops.poligon.typed.routers
 
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
-import akka.actor.typed.scaladsl.{Actor, ActorContext}
 
 import scala.io.StdIn
 
@@ -9,7 +9,7 @@ object TypedRouters1 {
 
   object ImmutableRoundRobin {
     def roundRobinBehavior[T](numberOfWorkers: Int, worker: Behavior[T]): Behavior[T] =
-      Actor.deferred { ctx =>
+      Behaviors.setup{ ctx =>
         val workers = (1 to numberOfWorkers).map { n =>
           ctx.spawn(worker, s"worker-$n")
         }
@@ -17,7 +17,7 @@ object TypedRouters1 {
       }
 
     private def activeRoutingBehavior[T](index: Long, workers: Vector[ActorRef[T]]): Behavior[T] =
-      Actor.immutable[T] { (ctx, msg) =>
+      Behaviors.immutable[T] { (ctx, msg) =>
         workers((index % workers.size).toInt) ! msg
         activeRoutingBehavior(index + 1, workers)
       }
@@ -26,12 +26,12 @@ object TypedRouters1 {
 
   object MutableRoundRobin {
     def roundRobinBehavior[T](numberOfWorkers: Int, worker: Behavior[T]): Behavior[T] =
-      Actor.mutable[T](ctx => new MutableRoundRobin(ctx, numberOfWorkers, worker))
+      Behaviors.mutable[T](ctx => new MutableRoundRobin(ctx, numberOfWorkers, worker))
   }
 
 
   class MutableRoundRobin[T](ctx: ActorContext[T], numberOfWorkers: Int, worker: Behavior[T])
-    extends Actor.MutableBehavior[T] {
+    extends Behaviors.MutableBehavior[T] {
 
     private var index = 0L
     private val workers = (1 to numberOfWorkers).map { n =>
@@ -54,10 +54,10 @@ object TypedRouters1 {
 
 
   def mutableRoundRobin(): Unit ={
-    val root=Actor.deferred[Nothing]{ctx =>
+    val root=Behaviors.setup[Nothing]{ctx =>
       val workerPool = ctx.spawn(MutableRoundRobin.roundRobinBehavior(3,Worker.workerBehavior),"workerPool")
       (1 to 20).foreach(n => workerPool ! Worker.Job(n.toString))
-      Actor.empty
+      Behaviors.empty
     }
 
 
@@ -73,10 +73,10 @@ object TypedRouters1 {
 
 
   def immutableRoundRobinExample(): Unit = {
-    val root = Actor.deferred[Nothing] { ctx =>
+    val root = Behaviors.setup[Nothing] { ctx =>
       val workerPool = ctx.spawn(ImmutableRoundRobin.roundRobinBehavior(3, Worker.workerBehavior), "workerPool")
       (1 to 20).foreach(n => workerPool ! Worker.Job(n.toString))
-      Actor.empty
+      Behaviors.empty
     }
 
     val system=ActorSystem[Nothing](root, "RoundRobin")

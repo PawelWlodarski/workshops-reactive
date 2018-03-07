@@ -2,10 +2,10 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.typed.receptionist.{Receptionist, ServiceKey}
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Terminated}
 import akka.actor.typed.receptionist.Receptionist.{Listing, Subscribe}
-import akka.actor.typed.scaladsl.Actor
+import akka.actor.typed.receptionist.{Receptionist, ServiceKey}
+import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Terminated}
 
 object DiscoveryTyped {
 
@@ -15,40 +15,40 @@ object DiscoveryTyped {
   final case object DiscoveryPong
 
 
-  val pingService : Behavior[DiscoveryPing] = Actor.deferred{ ctx =>
+  val pingService : Behavior[DiscoveryPing] = Behaviors.setup{ ctx =>
     ctx.system.receptionist ! Receptionist.Register(PingServiceKey,ctx.self, ctx.system.deadLetters)
-    Actor.immutable[DiscoveryPing]{ (_, msg) =>
+    Behaviors.immutable[DiscoveryPing]{ (_, msg) =>
       msg match {
         case DiscoveryPing(replyTo) =>
           replyTo ! DiscoveryPong
-          Actor.stopped
+          Behaviors.stopped
 
       }
     }
   }
 
 
-  def pinger(pingService : ActorRef[DiscoveryPing]) = Actor.deferred[DiscoveryPong.type ]{ctx =>
+  def pinger(pingService : ActorRef[DiscoveryPing]) = Behaviors.setup[DiscoveryPong.type ]{ctx =>
     pingService ! DiscoveryPing(ctx.self)
-    Actor.immutable{(_,msg) =>
+    Behaviors.immutable{(_,msg) =>
       println("I was ponged!!" + msg)
-      Actor.same
+      Behaviors.same
     }
   }
 
-  val guardian : Behavior[Listing[DiscoveryPing]] = Actor.deferred{ctx =>
+  val guardian : Behavior[Listing] = Behaviors.setup{ctx =>
     ctx.system.receptionist ! Subscribe(PingServiceKey,ctx.self)
     val ps = ctx.spawnAnonymous(pingService)
     ctx.watch(ps)
 
-    Actor.immutablePartial[Listing[DiscoveryPing]]{
-      case (c, Listing(PingServiceKey,listings)) if listings.nonEmpty =>
+    Behaviors.immutablePartial[Listing]{
+      case (c, PingServiceKey.Listing(listings)) if listings.nonEmpty =>
         listings.foreach(ps => ctx.spawnAnonymous(pinger(ps)))
-        Actor.same
+        Behaviors.same
     } onSignal {
       case (_,Terminated(`ps`)) =>
         println("Ping service has shut down")
-        Actor.stopped
+        Behaviors.stopped
     }
 
   }

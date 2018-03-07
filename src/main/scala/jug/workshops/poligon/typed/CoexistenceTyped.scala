@@ -2,8 +2,8 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.TimeUnit
 
+import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{Behavior, Terminated}
-import akka.actor.typed.scaladsl.Actor
 
 
 object CoexistenceTyped {
@@ -61,12 +61,12 @@ object CoexistenceTyped {
 
     case object Pong
 
-    val behavior: Behavior[Command] = akka.actor.typed.scaladsl.Actor.immutable { (ctx, msg) =>
+    val behavior: Behavior[Command] = akka.actor.typed.scaladsl.Behaviors.immutable { (ctx, msg) =>
       msg match {
         case Ping(replyTo) =>
           println(s"${ctx.self} got Ping from $replyTo")
           replyTo ! Pong
-          Actor.same
+          Behaviors.same
       }
     }
 
@@ -78,30 +78,30 @@ object CoexistenceTyped {
     sealed trait Command2
     case object Pong2 extends Command2
 
-    val behavior:Behavior[Command2] = Actor.deferred{ctx =>
+    val behavior:Behavior[Command2] = Behaviors.setup{ctx =>
       val second=ctx.actorOf(MyUntyped2.props(),"second")
 
       ctx.watch(second)
 
       second.tell(Ping2(ctx.self),ctx.self.toUntyped)
 
-      val behavior=Actor.immutable[Command2]{ (ctx,msg) =>
+      val behavior=Behaviors.immutable[Command2]{ (ctx,msg) =>
         msg match {
           case Pong2 =>
             println(s"${ctx.self} got Pong2")
             ctx.stop(second)
-            Actor.same
+            Behaviors.same
         }
       }
 
       behavior.onSignal{
         case (ctx, Terminated(ref)) =>
           println(s"${ctx.self} observed termination of $ref")
-          Actor.stopped
+          Behaviors.stopped
 
         case sig =>
           println(sig)
-          Actor.stopped
+          Behaviors.stopped
       }
 
       behavior

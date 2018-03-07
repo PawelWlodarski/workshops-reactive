@@ -2,9 +2,10 @@ package jug.workshops.poligon.typed
 
 import akka.actor.typed._
 import akka.actor.typed.scaladsl._
-import akka.testkit.typed.Effect._
-import akka.testkit.typed._
+import akka.testkit.typed.scaladsl.Effects._
+import akka.testkit.typed.scaladsl._
 import org.scalatest.FunSuite
+
 
 class SynchronousTypedTest extends FunSuite{
 
@@ -12,7 +13,7 @@ class SynchronousTypedTest extends FunSuite{
 
 
   test("Synchronous tests "){
-    val testkit = BehaviorTestkit(myBehavior)
+    val testkit = BehaviorTestKit(myBehavior)
 
     testkit.run(CreateChild("child"))
     testkit.expectEffect(Spawned(childActor,"child"))
@@ -23,16 +24,16 @@ class SynchronousTypedTest extends FunSuite{
 
     val inbox=TestInbox[String]()
     testkit.run(SayHello(inbox.ref))
-    inbox.expectMsg("hello")
+    inbox.expectMessage("hello")
 
 
     testkit.run(SayHelloToChild("child2"))
     val childInbox=testkit.childInbox[String]("child2")
-    childInbox.expectMsg("hello")
+    childInbox.expectMessage("hello")
 
     testkit.run(SayHelloToAnonymousChild)
     val childInbox2=testkit.childInbox[String]("$b")
-    childInbox2.expectMsg("hello stranger")
+    childInbox2.expectMessage("hello stranger")
 
   }
 
@@ -48,27 +49,27 @@ object ActorForTests {
   case object SayHelloToAnonymousChild extends CmdForTesting
   case class SayHello(who: ActorRef[String]) extends CmdForTesting
 
-  val childActor = Actor.immutable[String]{(_,_) =>
-    Actor.same[String]
+  val childActor = Behaviors.immutable[String]{(_,_) =>
+    Behaviors.same[String]
   }
 
-  val myBehavior = Actor.immutablePartial[CmdForTesting]{
+  val myBehavior = Behaviors.immutablePartial[CmdForTesting]{
     case (ctx, CreateChild(name)) ⇒
       ctx.spawn(childActor, name)
-      Actor.same
+      Behaviors.same
     case (ctx, CreateAnonymousChild) ⇒
       ctx.spawnAnonymous(childActor)
-      Actor.same
+      Behaviors.same
     case (ctx, SayHelloToChild(childName)) ⇒
       val child: ActorRef[String] = ctx.spawn(childActor, childName)
       child ! "hello"
-      Actor.same
+      Behaviors.same
     case (ctx, SayHelloToAnonymousChild) ⇒
       val child: ActorRef[String] = ctx.spawnAnonymous(childActor)
       child ! "hello stranger"
-      Actor.same
+      Behaviors.same
     case (_, SayHello(who)) ⇒
       who ! "hello"
-      Actor.same
+      Behaviors.same
   }
 }

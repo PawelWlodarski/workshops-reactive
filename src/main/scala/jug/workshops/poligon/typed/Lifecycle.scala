@@ -3,8 +3,8 @@ package jug.workshops.poligon.typed
 import java.io.{FileWriter, PrintWriter}
 import java.util.concurrent.ThreadLocalRandom
 
+import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{Behavior, PostStop, PreRestart}
-import akka.actor.typed.scaladsl.Actor
 
 object Lifecycle {
 
@@ -12,13 +12,13 @@ object Lifecycle {
   sealed trait LifecycleCommand
   final case class LifecycleJob(payload: String) extends LifecycleCommand
 
-  val workerBehavior: Behavior[LifecycleCommand] = Actor.deferred[LifecycleCommand]{ ctx =>
+  val workerBehavior: Behavior[LifecycleCommand] = Behaviors.setup[LifecycleCommand]{ ctx =>
     ctx.system.log.info("Worker {} is STARTED", ctx.self)
     val out = new PrintWriter(new FileWriter(s"target/out-${ctx.self.path.name}.txt", true))
     active(count=1, out)
   }
 
-  private def active(count:Int, out:PrintWriter): Behavior[LifecycleCommand] = Actor.immutable[LifecycleCommand] {
+  private def active(count:Int, out:PrintWriter): Behavior[LifecycleCommand] = Behaviors.immutable[LifecycleCommand] {
     (ctx,msg) =>
       msg match {
         case LifecycleJob(payload) =>
@@ -33,11 +33,11 @@ object Lifecycle {
     case (ctx,PreRestart) =>
       ctx.system.log.info("Worker {} is RESTARTED, count {} ", ctx.self, count)
       out.close()
-      Actor.same
+      Behaviors.same
     case (ctx, PostStop) =>
       ctx.system.log.info("Worker {} is STOPPED, count {}", ctx.self, count)
       out.close()
-      Actor.same
+      Behaviors.same
   }
 
 }

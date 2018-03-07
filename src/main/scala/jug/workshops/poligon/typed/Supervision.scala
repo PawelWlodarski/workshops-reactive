@@ -2,16 +2,16 @@ package jug.workshops.poligon.typed
 
 import java.util.concurrent.{ThreadLocalRandom, TimeUnit}
 
+import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorSystem, Behavior, SupervisorStrategy}
-import akka.actor.typed.scaladsl.Actor
 
 object Supervision {
 
   def main(args: Array[String]): Unit = {
-    val root = Actor.deferred[Nothing]{ctx =>
+    val root = Behaviors.setup[Nothing]{ctx =>
       val strategy=SupervisorStrategy.resume
-      val runtimeSupervise = Actor.supervise(workerBehavior).onFailure[RuntimeException](strategy)
-      val illegalStateSupervise= Actor.supervise(runtimeSupervise).onFailure[IllegalStateException](strategy)
+      val runtimeSupervise = Behaviors.supervise(workerBehavior).onFailure[RuntimeException](strategy)
+      val illegalStateSupervise= Behaviors.supervise(runtimeSupervise).onFailure[IllegalStateException](strategy)
 
       val worker=ctx.spawn(illegalStateSupervise, "worker")
 
@@ -20,7 +20,7 @@ object Supervision {
 
       }
 
-      Actor.empty
+      Behaviors.empty
     }
 
     val system=ActorSystem[Nothing](root,"sys")
@@ -36,7 +36,7 @@ object Supervision {
   val workerBehavior : Behavior[SupervisionCommand] = active(count=1)
 
   private def active(count:Int) : Behavior[SupervisionCommand] =
-    Actor.immutable[SupervisionCommand]{(ctx,msg)=>
+    Behaviors.immutable[SupervisionCommand]{(ctx,msg)=>
       msg match {
         case SupervisionJob(payload) =>
           if(ThreadLocalRandom.current().nextInt(5) == 0) throw new RuntimeException("bad luck")
