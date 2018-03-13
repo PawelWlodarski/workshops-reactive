@@ -67,9 +67,9 @@ object Part2ImmutabilityAndSignals {
 
 
     val system=ActorSystem(main,"injectionExample")
-
+//    system.terminate()
     wait3seconds(system)
-
+    pool.shutdown()
   }
 
 
