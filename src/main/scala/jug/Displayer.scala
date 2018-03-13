@@ -8,3 +8,9 @@ trait WorkshopDisplayer{
 }
 
 object WorkshopDisplayer extends WorkshopDisplayer
+
+trait ThreadInfo {
+  def threadName = Thread.currentThread().getName
+}
+
+object ThreadInfo extends ThreadInfo
