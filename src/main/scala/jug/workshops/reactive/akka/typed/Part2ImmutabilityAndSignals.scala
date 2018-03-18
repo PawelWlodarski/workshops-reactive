@@ -3,8 +3,9 @@ package jug.workshops.reactive.akka.typed
 import java.util.concurrent.TimeUnit
 
 import akka.NotUsed
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
 import akka.actor.typed.scaladsl.Behaviors
+import akka.util.Timeout
 import jug.ThreadInfo
 import jug.ThreadInfo._
 import jug.workshops.reactive.akka.typed.Echo.EchoCommand
@@ -16,11 +17,20 @@ import scala.util.{Failure, Success, Try}
 object Part2ImmutabilityAndSignals {
 
   def main(args: Array[String]): Unit = {
-//    echoExample()
-    injectionExample()
+    echoExample()
+//    injectionExample()
+//    stateExample()
   }
 
 
+  /**
+    *
+    * * First example shows simple actor which just repeat message
+    * * Two actor are used and an explicit sender
+    * * Behaviors.setup
+    * * Spawning typed actors
+    * * Stoping typed actors
+    */
   def echoExample()={
     val main=Behaviors.setup[NotUsed]{ctx =>
       val printer: ActorRef[String] = ctx.spawn(Printer.behavior,"printer") //name mandatory!!!
@@ -40,6 +50,12 @@ object Part2ImmutabilityAndSignals {
     wait3seconds(system)
   }
 
+  /**
+    * * injecting dependencies into typed actor
+    * * using different thread pools for blocking async operations
+    * * starting async operations inside an actor
+    *
+    */
   def injectionExample() = {
     //create custom thread pool
     val pool=java.util.concurrent.Executors.newFixedThreadPool(2)
@@ -70,6 +86,49 @@ object Part2ImmutabilityAndSignals {
 //    system.terminate()
     wait3seconds(system)
     pool.shutdown()
+  }
+
+  /**
+    *  * managing swtate in immutable behaviors
+    *  * typed ask pattern
+    *  * signals
+    */
+  import StateExample._
+  import akka.actor.typed.scaladsl.AskPattern._
+  import scala.concurrent.duration._
+  def stateExample() = {
+    //typed system
+    val system = ActorSystem[StateProtocol](stateBehavior(0),"stateExample")
+
+    //create custom thread pool
+    val pool=java.util.concurrent.Executors.newFixedThreadPool(2)
+    implicit val ec=ExecutionContext.fromExecutor(pool)
+    implicit val timeout:Timeout=1 second
+    implicit val s = system.scheduler
+
+
+
+    val firstResponse: Future[Int] = system ? { (ref: ActorRef[Int]) => IncrementState(ref)}
+
+    for{
+      first <- firstResponse
+      second <- system ? { (ref: ActorRef[Int]) => IncrementState(ref)}
+      third <- system ? { (ref: ActorRef[Int]) => IncrementState(ref)}
+      fourth <- system ? { (ref: ActorRef[Int]) => DecrementState(ref)}
+      fifth <- system ? { (ref: ActorRef[Int]) => IncrementState(ref)}
+
+    } {
+      println(s"first result in $threadName : $first")
+      println(s"second result in $threadName : $second")
+      println(s"third result in $threadName : $third")
+      println(s"fourth result in $threadName : $fourth")
+      println(s"fifth result in $threadName : $fifth")
+      system.terminate()
+      pool.shutdown()
+    }
+
+
+    wait3seconds(system)
   }
 
 
@@ -159,4 +218,34 @@ object InjectionExample {
   }
 
 
+}
+
+
+object StateExample{
+
+  trait StateProtocol{
+    def replyTo:ActorRef[Int]
+  }
+  final case class IncrementState(replyTo:ActorRef[Int]) extends StateProtocol
+  final case class DecrementState(replyTo:ActorRef[Int]) extends StateProtocol
+
+  //show where state inference is failing
+  def stateBehavior(init:Int=0):Behavior[StateProtocol]= Behaviors.immutable[StateProtocol]{ (_, message) =>
+    val newState=calculateNewState(init,message)
+    message.replyTo ! newState
+    stateBehavior(newState)
+  }.onSignal{ //sho Signal
+    case (_,PostStop) =>
+      println(s"state behavior stopped in $threadName")
+      Behaviors.stopped
+  }
+
+  private def calculateNewState(init:Int,message:StateProtocol):Int = message match {
+    case IncrementState(_) =>
+      println(s"incrementing state in $threadName")
+      init + 1
+    case DecrementState(_) =>
+      println(s"decrementing state in $threadName")
+      init - 1
+  }
 }
