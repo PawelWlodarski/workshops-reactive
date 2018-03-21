@@ -5,7 +5,7 @@ import akka.actor.typed.{ActorRef, Behavior}
 import akka.testkit.typed.scaladsl.{BehaviorTestKit, TestInbox}
 import org.scalatest.{FunSuite, MustMatchers}
 
-class Part1TypedAnswers extends FunSuite with MustMatchers {
+class Part1TypedExercises extends FunSuite with MustMatchers {
 
 
   //don't touch tests
@@ -54,6 +54,21 @@ class Part1TypedAnswers extends FunSuite with MustMatchers {
     domain ! DomainCommand1("data")
 
     domainLogic.expectMessage(DomainCommand1("data"))
+  }
+
+  test("Gate should be closed for incorrect credentials"){
+    val domainLogic=TestInbox[DomainProtocol]()
+    val caller=TestInbox[LoggingResponse]()
+    val behavior=new Gate(domainLogic.ref)
+
+    val gate=BehaviorTestKit(behavior)
+
+    //when
+    gate.run(LogIn("John","wrong",caller.ref))
+
+    //then
+    val response: LoggingResponse = caller.receiveMessage()
+    response mustBe a[UserDenied]
   }
 
 }
