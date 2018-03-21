@@ -54,6 +54,21 @@ class Part1TypedAnswers extends FunSuite with MustMatchers {
     domainLogic.expectMessage(DomainCommand1("data"))
   }
 
+  test("Gate should be closed for incorrect credentials"){
+    val domainLogic=TestInbox[DomainProtocol]()
+    val caller=TestInbox[LoggingResponse]()
+    val behavior=new Gate(domainLogic.ref)
+
+    val gate=BehaviorTestKit(behavior)
+
+    //when
+    gate.run(LogIn("John","wrong",caller.ref))
+
+    //then
+    val response: LoggingResponse = caller.receiveMessage()
+    response mustBe a[UserDenied]
+  }
+
 }
 
 
