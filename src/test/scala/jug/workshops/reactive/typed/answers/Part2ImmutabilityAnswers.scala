@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.testkit.typed.scaladsl.{BehaviorTestKit, TestInbox}
-import jug.workshops.reactive.typed.answers.ImmutabilityExercise3.{InMemoryEventLog, ReceivedRequest, SendInternalRequest}
+import jug.workshops.reactive.typed.answers.ImmutabilityExercise3._
 import org.scalatest.{FunSuite, MustMatchers}
 
 import scala.concurrent.{Await, Future}
@@ -68,6 +68,29 @@ class Part2ImmutabilityAnswers extends FunSuite with MustMatchers {
     Await.ready(Future.sequence(Seq(s1,s2,s3)),1 second)
 
     InMemoryEventLog.events must contain allOf(ReceivedRequest("1"),ReceivedRequest("2"),SendInternalRequest("action3"))
+  }
+
+  test("prepare repo"){
+    import scala.concurrent.duration._
+    val searchingUser1: Future[ImmutabilityExercise3.User] =InMemoryUserRepository.find(1)
+    val searchingUser2: Future[ImmutabilityExercise3.User] =InMemoryUserRepository.find(2)
+
+    val user1=Await.result(searchingUser1,1 second)
+    user1.email mustBe "someUser@serwer.com"
+
+
+    the[RuntimeException]  thrownBy{
+      Await.result(searchingUser2,1 second)
+    } must have message "no user with 2"
+  }
+
+  test("prepare API client"){
+    import scala.concurrent.duration._
+    val sendingRequest=TestApiClient.send(InternalRequest("someone@target.com",777))
+
+    val result=Await.result(sendingRequest,1 second)
+
+    result mustBe InternalResponse(200,"someone@target.com")
   }
 
 }
