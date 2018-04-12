@@ -1,4 +1,4 @@
-package jug.workshops.reactive.typed
+package jug.workshops.reactive.akka.typed
 
 
 import akka.testkit.typed.scaladsl.{BehaviorTestKit, TestInbox}

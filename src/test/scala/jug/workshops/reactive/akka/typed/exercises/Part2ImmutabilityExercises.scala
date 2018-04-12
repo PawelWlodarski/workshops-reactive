@@ -1,15 +1,11 @@
-package jug.workshops.reactive.typed.answers
+package jug.workshops.reactive.akka.typed.exercises
 
-import java.util.concurrent.TimeUnit
-
-import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.testkit.typed.scaladsl.{BehaviorTestKit, TestInbox}
-import jug.workshops.reactive.typed.answers.ImmutabilityExercise3._
+import jug.workshops.reactive.akka.typed.exercises.ImmutabilityExercise3._
 import org.scalatest.{FunSuite, MustMatchers}
 
 import scala.concurrent.{Await, Future}
-import scala.util.{Failure, Success}
 
 class Part2ImmutabilityAnswers extends FunSuite with MustMatchers {
 
@@ -129,26 +125,7 @@ object ImmutableCalcWithCache {
 
     cacheForTest = cache
 
-    Behaviors.immutable[ImmutableCalculationMessage] { (_, msg) =>
-      val (c,r)=calculateCacheForNextBehavior(cache, msg)
-      msg.replyTo ! r
-      calc(c)
-    }
-  }
-
-  private def calculateCacheForNextBehavior(cache: Map[ImmutableCalculation, ImmutableCalculationResult], msg: ImmutableCalculationMessage) =
-    cache.get(msg.c) match {
-      case Some(v) =>
-        (cache,v)
-      case _ =>
-        val result = calculateResult(msg.c)
-        (cache + (msg.c -> result) , result)
-    }
-
-
-  private def calculateResult(calc: ImmutableCalculation): ImmutableCalculationResult = calc match {
-    case ImmutableAdd(i1, i2) => ImmutableCalculationResult(i1 + i2)
-    case ImmutableMultiply(i1, i2) => ImmutableCalculationResult(i1 * i2)
+    ???
   }
 
 }
@@ -171,14 +148,7 @@ final case class DomainCommand12(data: String) extends DomainProtocol2
 final case class DomainCommand22(data1: Int, data2: Boolean) extends DomainProtocol2
 
 object Gate2 {
-  def gate(domain:ActorRef[DomainProtocol2]):Behavior[LogIn2]= Behaviors.immutable{
-    case (_, LogIn2(user, password, from)) if user == "John" && password == "p4ssword" =>
-      from ! UserGranted2(domain)
-      Behaviors.same
-    case (_,LogIn2(u, p, from)) =>
-      from ! UserDenied2(s"wrong password : [$u,$p]")
-      Behaviors.same
-  }
+  def gate(domain:ActorRef[DomainProtocol2]):Behavior[LogIn2]= ???
 }
 
 
@@ -208,15 +178,10 @@ object ImmutabilityExercise3 {
   }
 
   object InMemoryEventLog extends EventLog {
-    private var storedEvents=List.empty[Event]
 
-    override def saveEvent(e: Event): Future[Done] = {
-      storedEvents=e::storedEvents
-      TimeUnit.MILLISECONDS.sleep(100)
-      Future.successful(Done.done)
-    }
+    override def saveEvent(e: Event): Future[Done] = ???
 
-    override def events: Seq[Event] = storedEvents
+    override def events: Seq[Event] = ???
   }
   //User Repo
   type UserId=Long
@@ -228,15 +193,9 @@ object ImmutabilityExercise3 {
   }
 
   object InMemoryUserRepository extends UserRepository {
-    private val users = Map(
-      1L -> User(1L,"someUser@serwer.com")
-    )
 
+    override def find(id: UserId): Future[User] = ???
 
-    override def find(id: UserId): Future[User] =
-      users.get(id)
-        .map(Future.successful)
-        .getOrElse(Future.failed(new RuntimeException(s"no user with $id")))
   }
 
   //Api Client
@@ -247,36 +206,15 @@ object ImmutabilityExercise3 {
   }
 
   object TestApiClient extends ApiClient{
-    override def send(r: InternalRequest): Future[InternalResponse] =
-      Future.successful(InternalResponse(200,r.to,r.someValue))
+    override def send(r: InternalRequest): Future[InternalResponse] = ???
   }
 
 
   //actor
 
-  def exercise3Behavior(initialValue:Int, eventLog:EventLog, userRepo:UserRepository, api:ApiClient):Behavior[Exercise3Request] = {
+  def exercise3Behavior(initialValue:Int, eventLog:EventLog,
+                        userRepo:UserRepository, api:ApiClient):Behavior[Exercise3Request] = ???
 
-    def newExercise3Behavior(value:Int):Behavior[Exercise3Request]  =
-      Behaviors.immutable[Exercise3Request]{
-        case (ctx,NotifyUser(userId,replyTo)) =>
-          implicit val ec=ctx.system.executionContext // no blocking in the for loop
-          val preparingRequest=for{
-            _ <- eventLog.saveEvent(ReceivedRequest("NotifyUser"))
-            user <- userRepo.find(userId)
-            r <- api.send(InternalRequest(user.email,initialValue))
-
-          } yield  Exercise3Response(r.statusCode,r.from,r.value)
-
-          preparingRequest.onComplete{
-            case Success(response) => replyTo ! response
-            case Failure(e) => println(s"handling failure $e")
-          }(ctx.system.executionContext) // no blocking
-
-          newExercise3Behavior(initialValue+1)
-      }
-
-    newExercise3Behavior(initialValue)
-  }
 
 
 

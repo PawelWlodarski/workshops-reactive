@@ -1,4 +1,4 @@
-package jug.workshops.reactive.typed.answers
+package jug.workshops.reactive.akka.typed.answers
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.Behaviors.MutableBehavior

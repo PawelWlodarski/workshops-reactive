@@ -1,4 +1,4 @@
-package jug.workshops.reactive.typed.exercises
+package jug.workshops.reactive.akka.typed.exercises
 
 import akka.actor.typed.scaladsl.Behaviors.MutableBehavior
 import akka.actor.typed.{ActorRef, Behavior}

@@ -51,8 +51,7 @@ object DomainObject {
   case class RemoveItem(shoppingCart: ShoppingCartRef, item: ItemRef, count: Int) extends Command
 
   sealed trait Query extends ShoppingCartMessage
-  trait Querysealed
-  case class GetItems(shoppingCart: ShoppingCartRef) extends Querysealed
+  case class GetItems(shoppingCart: ShoppingCartRef) extends Query
   trait Event extends ShoppingCartMessage
   case class OwnerChanged(shoppingCart: ShoppingCartRef, owner: CustomerRef) extends Event
   case class ItemAdded(shoppingCart: ShoppingCartRef, item: ItemRef, count: Int) extends Event
