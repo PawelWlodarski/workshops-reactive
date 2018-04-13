@@ -1,4 +1,4 @@
-package jug.workshops.reactive.akka.typed.patterns.answers
+package jug.workshops.reactive.akka.typed.patterns.exercises
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.actor.typed.Behavior
@@ -7,33 +7,27 @@ import akka.testkit.{TestKit, TestProbe}
 import akka.testkit.typed.scaladsl.{BehaviorTestKit, TestInbox}
 import org.scalatest.{BeforeAndAfterAll, FunSuite, FunSuiteLike, MustMatchers}
 
-object DomainObjectAnswers {
 
-  //max 3 products
-  //
+//EXERCISES
+// finish DomainPurchase1
+// finish purchaseBehavior
+// finish Untyped actor
+object DomainObjectExercises {
+
   class DomainPurchase1 private() {
     private var products = List[DomainProduct1]()
 
-    def addProduct(p: DomainProduct1): DomainResult =
-      if (products.size < 3) {
-        products = p :: products
-        DomainSuccess
-      } else DomainFailure
+    //max 3 products
+    def addProduct(p: DomainProduct1): DomainResult = ???
 
 
-    def removeProduct(name: String): Unit =
-      products = products.filter(_.name != name)
 
-    def calculateFinalPrice(): Double = {
-      val price = products.map(_.price).sum
-      calculateDiscount(price)
-    }
+    def removeProduct(name: String): Unit = ???
 
-    private def calculateDiscount(totalPrice: Double) =
-      if (totalPrice > DomainPurchase1.discountThreeshold)
-        totalPrice * (100 - DomainPurchase1.discountPercent) / 100
-      else
-        totalPrice
+    def calculateFinalPrice(): Double = ???
+
+    private def calculateDiscount(totalPrice: Double) = ???
+
 
   }
 
@@ -77,27 +71,14 @@ object DomainObjectAnswers {
 
     val purchaseState = DomainPurchase1()
 
-    def mapAddProduct(p:DomainProduct1) : DomainEvent1 = purchaseState.addProduct(p) match {
-      case DomainSuccess => ProductAdded1(p.name)
-      case DomainFailure => DomainError1(s"error : ${p.name}")
-    }
-
-    def mapRemoveProduct(n:String): ProductRemoved1 = {
-      purchaseState.removeProduct(n)
-      ProductRemoved1(n)
-    }
-
-    def mapCheckout() : PurchaseEvent1 = {
-      val price = purchaseState.calculateFinalPrice()
-      PurchaseEvent1(price)
-    }
+    def mapAddProduct(p:DomainProduct1) : DomainEvent1 = ???
 
 
     Behaviors.immutable[DomainCommand1] { (_, msg) =>
       msg match {
         case AddProduct1(p, replyTo) => replyTo ! mapAddProduct(p)
-        case RemoveProduct1(name,replyTo) => replyTo ! mapRemoveProduct(name)
-        case Checkout1(replyTo) => replyTo ! mapCheckout()
+        case RemoveProduct1(name,replyTo) => ???
+        case Checkout1(replyTo) => ???
       }
       Behaviors.same
     }
@@ -105,7 +86,7 @@ object DomainObjectAnswers {
   }
 }
 
-  import DomainObjectAnswers._
+  import DomainObjectExercises._
 
   class DomainPurchase1UnitTest extends FunSuite with MustMatchers {
     test("calculate price") {
@@ -150,7 +131,7 @@ object DomainObjectAnswers {
   class DomainBehavior1SyncTest extends FunSuite with MustMatchers{
 
     test("add product"){
-        val stateActor =  BehaviorTestKit(DomainObjectAnswers.purchaseBehavior)
+        val stateActor =  BehaviorTestKit(DomainObjectExercises.purchaseBehavior)
         val senderBox=TestInbox[DomainEvent1]()
         val product = DomainProduct1("testProduct",69)
 
@@ -160,7 +141,7 @@ object DomainObjectAnswers {
     }
 
     test("fail to add product"){
-      val stateActor =  BehaviorTestKit(DomainObjectAnswers.purchaseBehavior)
+      val stateActor =  BehaviorTestKit(DomainObjectExercises.purchaseBehavior)
       val senderBox=TestInbox[DomainEvent1]()
       val product = DomainProduct1("testProduct",69)
 
@@ -175,7 +156,7 @@ object DomainObjectAnswers {
     }
 
     test("remove product"){
-      val stateActor =  BehaviorTestKit(DomainObjectAnswers.purchaseBehavior)
+      val stateActor =  BehaviorTestKit(DomainObjectExercises.purchaseBehavior)
       val senderBox=TestInbox[DomainEvent1]()
       val product = DomainProduct1("testProduct",69)
 
@@ -188,7 +169,7 @@ object DomainObjectAnswers {
     }
 
     test("checkout"){
-      val stateActor =  BehaviorTestKit(DomainObjectAnswers.purchaseBehavior)
+      val stateActor =  BehaviorTestKit(DomainObjectExercises.purchaseBehavior)
       val senderBox=TestInbox[Any]()
       val product1 = DomainProduct1("testProduct1",10)
       val product2 = DomainProduct1("testProduct2",20)
@@ -211,26 +192,15 @@ object DomainObjectAnswers {
 class DomainBehavior1AsyncTest extends TestKit(ActorSystem("tests")) with FunSuiteLike with MustMatchers with BeforeAndAfterAll {
 
   import akka.actor.typed.scaladsl.adapter._
+  //EXERCISE !!!
   class Untyped(listener:ActorRef, shop:akka.actor.typed.ActorRef[DomainCommand1]) extends akka.actor.Actor{
-    override def receive: Receive = {
-      case "GO" =>
-        val product1 = DomainProduct1("testProduct1",10)
-        val product2 = DomainProduct1("testProduct2",20)
-        val product3 = DomainProduct1("testProduct3",70)
-
-        shop ! AddProduct1(product1,self)
-        shop ! AddProduct1(product2,self)
-        shop ! AddProduct1(product3,self)
-        shop ! Checkout1(self)
-      case msg:PurchaseEvent1 =>
-        listener ! msg
-    }
+    override def receive: Receive = ???
   }
 
 
   test("untyped to typed"){
     val probe = TestProbe()
-    val shop=system.spawn(DomainObjectAnswers.purchaseBehavior,"candyShop")
+    val shop=system.spawn(DomainObjectExercises.purchaseBehavior,"candyShop")
     val untyped=system.actorOf(Props(new Untyped(probe.ref,shop)))
 
     untyped ! "GO"
