@@ -13,6 +13,10 @@ val akkaStreamTestKit="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion
 val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
 val akkaTyped="com.typesafe.akka" %% "akka-actor-typed" % akkaVersion
 val akkaTypedTest = "com.typesafe.akka" %% "akka-testkit-typed" % akkaVersion % Test
+val akkaPersistence = "com.typesafe.akka" %% "akka-persistence" % akkaVersion
+
+val levelDBJournal = "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8"
+
 
 val cats = "org.typelevel" %% "cats-core" % "1.0.1"
 
@@ -21,6 +25,7 @@ val scalaTest="org.scalatest" %% "scalatest" % "3.0.4" % "test"
 libraryDependencies ++= Seq(
   akka,akkaTest,akkaStream,akkaStreamsTest,akkaStreamTestKit,
   akkaTyped,akkaTypedTest,
+  akkaPersistence,levelDBJournal,
   cats,
   scalaTest
 )
