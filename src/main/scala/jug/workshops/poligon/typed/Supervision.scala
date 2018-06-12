@@ -36,7 +36,7 @@ object Supervision {
   val workerBehavior : Behavior[SupervisionCommand] = active(count=1)
 
   private def active(count:Int) : Behavior[SupervisionCommand] =
-    Behaviors.immutable[SupervisionCommand]{(ctx,msg)=>
+    Behaviors.receive[SupervisionCommand]{(ctx,msg)=>
       msg match {
         case SupervisionJob(payload) =>
           if(ThreadLocalRandom.current().nextInt(5) == 0) throw new RuntimeException("bad luck")

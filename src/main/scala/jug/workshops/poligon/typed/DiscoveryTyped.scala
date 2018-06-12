@@ -17,7 +17,7 @@ object DiscoveryTyped {
 
   val pingService : Behavior[DiscoveryPing] = Behaviors.setup{ ctx =>
     ctx.system.receptionist ! Receptionist.Register(PingServiceKey,ctx.self, ctx.system.deadLetters)
-    Behaviors.immutable[DiscoveryPing]{ (_, msg) =>
+    Behaviors.receive[DiscoveryPing]{ (_, msg) =>
       msg match {
         case DiscoveryPing(replyTo) =>
           replyTo ! DiscoveryPong
@@ -30,7 +30,7 @@ object DiscoveryTyped {
 
   def pinger(pingService : ActorRef[DiscoveryPing]) = Behaviors.setup[DiscoveryPong.type ]{ctx =>
     pingService ! DiscoveryPing(ctx.self)
-    Behaviors.immutable{(_,msg) =>
+    Behaviors.receive{(_,msg) =>
       println("I was ponged!!" + msg)
       Behaviors.same
     }
@@ -41,11 +41,11 @@ object DiscoveryTyped {
     val ps = ctx.spawnAnonymous(pingService)
     ctx.watch(ps)
 
-    Behaviors.immutablePartial[Listing]{
+    Behaviors.receivePartial[Listing]{
       case (c, PingServiceKey.Listing(listings)) if listings.nonEmpty =>
         listings.foreach(ps => ctx.spawnAnonymous(pinger(ps)))
         Behaviors.same
-    } onSignal {
+    } receiveSignal {
       case (_,Terminated(`ps`)) =>
         println("Ping service has shut down")
         Behaviors.stopped

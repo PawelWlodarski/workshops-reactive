@@ -18,7 +18,7 @@ object Lifecycle {
     active(count=1, out)
   }
 
-  private def active(count:Int, out:PrintWriter): Behavior[LifecycleCommand] = Behaviors.immutable[LifecycleCommand] {
+  private def active(count:Int, out:PrintWriter): Behavior[LifecycleCommand] = Behaviors.receive[LifecycleCommand] {
     (ctx,msg) =>
       msg match {
         case LifecycleJob(payload) =>
@@ -29,7 +29,7 @@ object Lifecycle {
           active(count + 1, out)
       }
 
-  } onSignal {
+  } receiveSignal {
     case (ctx,PreRestart) =>
       ctx.system.log.info("Worker {} is RESTARTED, count {} ", ctx.self, count)
       out.close()

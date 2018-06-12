@@ -8,7 +8,7 @@ object Worker {
   final case class Job(payload:String) extends WorkerCommand
 
   val workerBehavior:Behavior[WorkerCommand] =
-    Behaviors.immutable[WorkerCommand]{(ctx,msg) =>
+    Behaviors.receive[WorkerCommand]{(ctx,msg) =>
       msg match {
         case Job(payload) =>
           println(s"Worker ${ctx.self} got job $payload")

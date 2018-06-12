@@ -1,6 +1,6 @@
 package jug.workshops.poligon.typed.routers
 
-import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors, MutableBehavior}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 
 import scala.io.StdIn
@@ -17,7 +17,7 @@ object TypedRouters1 {
       }
 
     private def activeRoutingBehavior[T](index: Long, workers: Vector[ActorRef[T]]): Behavior[T] =
-      Behaviors.immutable[T] { (ctx, msg) =>
+      Behaviors.receive[T] { (ctx, msg) =>
         workers((index % workers.size).toInt) ! msg
         activeRoutingBehavior(index + 1, workers)
       }
@@ -26,12 +26,12 @@ object TypedRouters1 {
 
   object MutableRoundRobin {
     def roundRobinBehavior[T](numberOfWorkers: Int, worker: Behavior[T]): Behavior[T] =
-      Behaviors.mutable[T](ctx => new MutableRoundRobin(ctx, numberOfWorkers, worker))
+      Behaviors.setup[T](ctx => new MutableRoundRobin(ctx, numberOfWorkers, worker))
   }
 
 
   class MutableRoundRobin[T](ctx: ActorContext[T], numberOfWorkers: Int, worker: Behavior[T])
-    extends Behaviors.MutableBehavior[T] {
+    extends MutableBehavior[T] {
 
     private var index = 0L
     private val workers = (1 to numberOfWorkers).map { n =>

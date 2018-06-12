@@ -38,7 +38,7 @@ object CoexistenceTyped2 {
     case object Pong
 
 
-    val behavior: Behavior[Command] = Behaviors.immutable{ (ctx, msg) =>
+    val behavior: Behavior[Command] = Behaviors.receive{ (ctx, msg) =>
       msg match {
         case Ping(replyTo) =>
           println(s"${ctx.self} got Ping from $replyTo")
@@ -89,12 +89,12 @@ object CoexistenceTyped2 {
       ctx.watch(untyped)
       untyped.tell(Ping2(ctx.self),ctx.self.toUntyped)
 
-      Behaviors.immutablePartial[Command2]{
+      Behaviors.receivePartial[Command2]{
         case (ctx,Pong2) =>
           println("stoping untyped")
           ctx.stop(untyped)
           Behaviors.same
-      } onSignal {
+      } receiveSignal {
         case (_, akka.actor.typed.Terminated(_)) =>
           println("stopping typed")
           Behaviors.stopped

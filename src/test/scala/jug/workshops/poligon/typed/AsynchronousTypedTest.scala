@@ -27,7 +27,7 @@ object Protocol{
   case class AsynTestPong(msg: String)
 
 
-  val echoActor: Behavior[AsynTestPing] = Behaviors.immutable[AsynTestPing]{ (_, msg)=>
+  val echoActor: Behavior[AsynTestPing] = Behaviors.receive[AsynTestPing]{ (_, msg)=>
     msg match {
       case AsynTestPing(m,replyTo) =>
         replyTo ! AsynTestPong(m)

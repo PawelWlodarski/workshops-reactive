@@ -161,11 +161,11 @@ object Echo extends ThreadInfo{
       Behaviors.same
   }
 
-  val echo = Behaviors.immutable[EchoCommand](echoFunction)
+  val echo = Behaviors.receive[EchoCommand](echoFunction)
 }
 
 object Printer{
-  val behavior:Behavior[String]=Behaviors.immutable{(_,message) =>
+  val behavior:Behavior[String]=Behaviors.receive{(_,message) =>
     println(s"Printing $message in $threadName")
     Behaviors.same
   }
@@ -185,7 +185,7 @@ object InjectionExample {
 
   //DEPENDECY INJECTION INTO BEHAVIOR
   def initiateBehavior(pr:ProductRepository):Behavior[AdminCommand] =
-    Behaviors.immutable{
+    Behaviors.receive{
       case (ctx,GetInfo(id)) =>
         println(s"looking for product in actor , thread $threadName")
         pr.find(id).onComplete(findProductComplete)(ctx.executionContext) // CTX.EXECUTIONCONTEXT
@@ -230,11 +230,11 @@ object StateExample{
   final case class DecrementState(replyTo:ActorRef[Int]) extends StateProtocol
 
   //show where state inference is failing
-  def stateBehavior(init:Int=0):Behavior[StateProtocol]= Behaviors.immutable[StateProtocol]{ (_, message) =>
+  def stateBehavior(init:Int=0):Behavior[StateProtocol]= Behaviors.receive[StateProtocol]{ (_, message) =>
     val newState=calculateNewState(init,message)
     message.replyTo ! newState
     stateBehavior(newState)
-  }.onSignal{ //sho Signal
+  }.receiveSignal{ //sho Signal
     case (_,PostStop) =>
       println(s"state behavior stopped in $threadName")
       Behaviors.stopped

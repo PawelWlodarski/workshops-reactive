@@ -1,8 +1,7 @@
 package jug.workshops.reactive.akka.typed
 
 import akka.NotUsed
-import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.scaladsl.Behaviors.MutableBehavior
+import akka.actor.typed.scaladsl.{Behaviors, MutableBehavior}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 
 import scala.concurrent.Await
@@ -12,7 +11,7 @@ object Part1MutableTypedActor {
 
   def main(args: Array[String]): Unit = {
     //everything in package akka.actor.typed or akka.actor.typed.scaladsl (since 2.5.11)
-    val behavior = akka.actor.typed.scaladsl.Behaviors.mutable[Part1Command](ctx => new MutableTyped())
+    val behavior = akka.actor.typed.scaladsl.Behaviors.setup[Part1Command](ctx => new MutableTyped())
 
     //main thread
     println(s"starting in thread ${Thread.currentThread().getName}")
@@ -22,7 +21,7 @@ object Part1MutableTypedActor {
       //some thread from actor pool
       println(s"setup in thread ${Thread.currentThread().getName}")
       val helloActor: ActorRef[Part1Command] =ctx.spawn(behavior,"HelloActor")
-      val devNull: ActorRef[Any] = ctx.spawn(Behaviors.mutable[Any](_ => new DevNull),"DevNull")
+      val devNull: ActorRef[Any] = ctx.spawn(Behaviors.setup[Any](_ => new DevNull),"DevNull")
 
       //sender is not mandatory anymore, if you want to have sender you need to add it to the protocol
       helloActor ! Part1Hello("mainFunction",replyTo = devNull)

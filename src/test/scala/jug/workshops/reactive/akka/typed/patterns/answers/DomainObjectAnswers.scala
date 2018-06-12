@@ -93,7 +93,7 @@ object DomainObjectAnswers {
     }
 
 
-    Behaviors.immutable[DomainCommand1] { (_, msg) =>
+    Behaviors.receive[DomainCommand1] { (_, msg) =>
       msg match {
         case AddProduct1(p, replyTo) => replyTo ! mapAddProduct(p)
         case RemoveProduct1(name,replyTo) => replyTo ! mapRemoveProduct(name)

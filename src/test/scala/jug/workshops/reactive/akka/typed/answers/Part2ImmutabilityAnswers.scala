@@ -129,7 +129,7 @@ object ImmutableCalcWithCache {
 
     cacheForTest = cache
 
-    Behaviors.immutable[ImmutableCalculationMessage] { (_, msg) =>
+    Behaviors.receive[ImmutableCalculationMessage] { (_, msg) =>
       val (c,r)=calculateCacheForNextBehavior(cache, msg)
       msg.replyTo ! r
       calc(c)
@@ -171,7 +171,7 @@ final case class DomainCommand12(data: String) extends DomainProtocol2
 final case class DomainCommand22(data1: Int, data2: Boolean) extends DomainProtocol2
 
 object Gate2 {
-  def gate(domain:ActorRef[DomainProtocol2]):Behavior[LogIn2]= Behaviors.immutable{
+  def gate(domain:ActorRef[DomainProtocol2]):Behavior[LogIn2]= Behaviors.receive{
     case (_, LogIn2(user, password, from)) if user == "John" && password == "p4ssword" =>
       from ! UserGranted2(domain)
       Behaviors.same
@@ -257,7 +257,7 @@ object ImmutabilityExercise3 {
   def exercise3Behavior(initialValue:Int, eventLog:EventLog, userRepo:UserRepository, api:ApiClient):Behavior[Exercise3Request] = {
 
     def newExercise3Behavior(value:Int):Behavior[Exercise3Request]  =
-      Behaviors.immutable[Exercise3Request]{
+      Behaviors.receive[Exercise3Request]{
         case (ctx,NotifyUser(userId,replyTo)) =>
           implicit val ec=ctx.system.executionContext // no blocking in the for loop
           val preparingRequest=for{

@@ -49,11 +49,11 @@ object ActorForTests {
   case object SayHelloToAnonymousChild extends CmdForTesting
   case class SayHello(who: ActorRef[String]) extends CmdForTesting
 
-  val childActor = Behaviors.immutable[String]{(_,_) =>
+  val childActor = Behaviors.receive[String]{(_,_) =>
     Behaviors.same[String]
   }
 
-  val myBehavior = Behaviors.immutablePartial[CmdForTesting]{
+  val myBehavior = Behaviors.receivePartial[CmdForTesting]{
     case (ctx, CreateChild(name)) ⇒
       ctx.spawn(childActor, name)
       Behaviors.same

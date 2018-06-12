@@ -61,7 +61,7 @@ object CoexistenceTyped {
 
     case object Pong
 
-    val behavior: Behavior[Command] = akka.actor.typed.scaladsl.Behaviors.immutable { (ctx, msg) =>
+    val behavior: Behavior[Command] = akka.actor.typed.scaladsl.Behaviors.receive { (ctx, msg) =>
       msg match {
         case Ping(replyTo) =>
           println(s"${ctx.self} got Ping from $replyTo")
@@ -85,7 +85,7 @@ object CoexistenceTyped {
 
       second.tell(Ping2(ctx.self),ctx.self.toUntyped)
 
-      val behavior=Behaviors.immutable[Command2]{ (ctx,msg) =>
+      val behavior=Behaviors.receive[Command2]{ (ctx,msg) =>
         msg match {
           case Pong2 =>
             println(s"${ctx.self} got Pong2")
@@ -94,7 +94,7 @@ object CoexistenceTyped {
         }
       }
 
-      behavior.onSignal{
+      behavior.receiveSignal{
         case (ctx, Terminated(ref)) =>
           println(s"${ctx.self} observed termination of $ref")
           Behaviors.stopped

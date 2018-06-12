@@ -3,7 +3,7 @@ package jug.workshops.poligon.typed
 import java.util.concurrent.TimeUnit
 
 import akka.actor.typed.scaladsl.AskPattern._
-import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.scaladsl.{Behaviors, MutableBehavior}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.util.Timeout
 
@@ -29,14 +29,14 @@ object HelloTyped {
 
     final case class WhoToGreet(who: String) extends Command
 
-    val greeterBehaviour: Behavior[Command] = Behaviors.mutable[Command](ctx => new Greeter1)
+    val greeterBehaviour: Behavior[Command] = akka.actor.typed.scaladsl.Behaviors.setup[Command](ctx => new Greeter1())
   }
 
-  class Greeter1 extends Behaviors.MutableBehavior[Greeter1.Command] {
+  class Greeter1() extends MutableBehavior[Greeter1.Command] {
     import Greeter1._
     private var greeting = "hello"
 
-    override def onMessage(msg: Greeter1.Command): Behavior[Greeter1.Command] = {
+    override def onMessage(msg: Command): Behavior[Command] = {
       msg match {
         case WhoToGreet(who) => greeting = s"hello, $who"
         case Greet => println(greeting)
@@ -56,7 +56,7 @@ object HelloTyped {
     val greeterBehaviour: Behavior[Command] = greeterBehavior(currentGreeting = "hello")
 
     private def greeterBehavior(currentGreeting: String): Behavior[Command] =
-      Behaviors.immutable[Command] { (ctx, msg) =>
+      Behaviors.receive[Command] { (ctx, msg) =>
         msg match  {
           case WhoToGreet(who) =>
             greeterBehavior(s"hello, $who")
@@ -92,7 +92,7 @@ object HelloTyped {
     final case class Greeted(whom: String)
 
 
-    val greeter: Behavior[Greet] = Behaviors.immutable[Greet] { (_, msg) =>
+    val greeter: Behavior[Greet] = Behaviors.receive[Greet] { (_, msg) =>
       println(s"Hello ${msg.whom}")
       msg.replyTo ! Greeted(msg.whom)
       Behaviors.same

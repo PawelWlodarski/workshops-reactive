@@ -4,7 +4,7 @@ version := "1.0"
 
 scalaVersion := "2.12.4"
 
-val akkaVersion = "2.5.11"
+val akkaVersion = "2.5.13"
 val slickVersion = "3.2.3"
 
 val akka="com.typesafe.akka" %% "akka-actor" % akkaVersion
@@ -13,7 +13,7 @@ val akkaStream="com.typesafe.akka" %% "akka-stream" % akkaVersion
 val akkaStreamTestKit="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
 val akkaStreamsTest="com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % "test"
 val akkaTyped="com.typesafe.akka" %% "akka-actor-typed" % akkaVersion
-val akkaTypedTest = "com.typesafe.akka" %% "akka-testkit-typed" % akkaVersion % Test
+val akkaTypedTest = "com.typesafe.akka" %% "akka-testkit-typed" % "2.5.12" % Test
 val akkaPersistence = "com.typesafe.akka" %% "akka-persistence" % akkaVersion
 
 val levelDBJournal = "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8"

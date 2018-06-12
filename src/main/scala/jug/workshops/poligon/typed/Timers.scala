@@ -15,7 +15,7 @@ object Timers {
 
 
   private def idle(timers: TimerScheduler[TimersMsg], target: ActorRef[Batch],after:FiniteDuration,maxSize:Int)
-  : Behavior[TimersMsg] = Behaviors.immutable[TimersMsg]{ (ctx,msg) =>
+  : Behavior[TimersMsg] = Behaviors.receive[TimersMsg]{ (ctx,msg) =>
       timers.startSingleTimer(TimerKey,Timeout,after)
       active(Vector(msg),timers,target,after,maxSize)
   }
@@ -23,7 +23,7 @@ object Timers {
 
   private def active(buffer : Vector[TimersMsg], timers: TimerScheduler[TimersMsg],
                      target: ActorRef[Batch], after: FiniteDuration, maxSize:Int):Behavior[TimersMsg]=
-    Behaviors.immutable[TimersMsg]{(ctx,msg) =>
+    Behaviors.receive[TimersMsg]{(ctx,msg) =>
       msg match {
         case Timeout =>
           target ! Batch(buffer)

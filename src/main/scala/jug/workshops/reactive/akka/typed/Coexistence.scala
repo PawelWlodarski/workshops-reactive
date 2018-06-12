@@ -42,7 +42,7 @@ object Coexistence {
 
       receiver ! RequestFromTyped(ctx.self.toUntyped)
 
-      Behaviors.immutable[ResponseFromUntyped]{(_,msg) =>
+      Behaviors.receive[ResponseFromUntyped]{(_,msg) =>
         println(s"received $msg back")
         Behaviors.same
       }

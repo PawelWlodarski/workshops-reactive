@@ -1,7 +1,6 @@
 package jug.workshops.reactive.akka.typed.answers
 
-import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.scaladsl.Behaviors.MutableBehavior
+import akka.actor.typed.scaladsl.{Behaviors, MutableBehavior}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.testkit.typed.scaladsl.{BehaviorTestKit, TestInbox}
 import org.scalatest.{FunSuite, MustMatchers}

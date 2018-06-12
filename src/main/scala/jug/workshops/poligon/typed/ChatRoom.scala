@@ -26,7 +26,7 @@ object ChatRoom {
   val behavior:Behavior[Command] = chatRoom(List.empty)
 
   private def chatRoom(sessions: List[ActorRef[SessionEvent]]): Behavior[Command] =
-    Behaviors.immutable[Command] { (ctx, msg) =>
+    Behaviors.receive[Command] { (ctx, msg) =>
       msg match {
         case GetSession(screenName, client) =>
           val wrapper = ctx.messageAdapter{
@@ -41,7 +41,7 @@ object ChatRoom {
       }
     }
 
-  val gabbler = Behaviors.immutable[SessionEvent]{ (_,msg) =>
+  val gabbler = Behaviors.receive[SessionEvent]{ (_,msg) =>
     msg match {
       case SessionGranted(handle) =>
         handle ! PostMessage("Hello World!")
@@ -60,11 +60,11 @@ object ChatRoom {
       val gabblerRef: ActorRef[SessionEvent] =ctx.spawn(gabbler,"gabbler")
       ctx.watch(gabblerRef)
 
-      Behaviors.immutablePartial[String]{
+      Behaviors.receivePartial[String]{
         case (_, "go") =>
           chatroom ! GetSession("Gabber",gabblerRef)
           Behaviors.same
-      }.onSignal{
+      }.receiveSignal{
         case (_,Terminated(ref)) =>
           println(s"$ref is terminated")
           Behaviors.stopped
