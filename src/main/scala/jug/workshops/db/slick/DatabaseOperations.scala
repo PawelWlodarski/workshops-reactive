@@ -16,9 +16,21 @@ trait DatabaseOperations {
   }
 
 
-  def waitForResult[A](operation: Future[A]) = {
-    import scala.concurrent.duration._
-    Await.result(operation, 1 second)
+
+  def withInitiatedDb[A](initialization:DBIO[Unit]*)(op: Database => Unit): Unit= {
+    val cfg = ConfigFactory.load("db/appslick")
+    val db = Database.forConfig("slickdbconf1", cfg)
+
+    val initSequence=DBIO.seq(initialization:_*)
+    waitForResult(db.run(initSequence.transactionally))
+
+    op(db)
+    db.close()
+  }
+
+  def waitForResult[A](operation: Future[A], howManySeconds : Int= 1) = {
+  import scala.concurrent.duration._
+    Await.result(operation, howManySeconds second)
   }
 
 
