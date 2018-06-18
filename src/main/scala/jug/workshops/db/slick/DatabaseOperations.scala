@@ -17,7 +17,7 @@ trait DatabaseOperations {
 
 
 
-  def withInitiatedDb[A](initialization:DBIO[Unit]*)(op: Database => Unit): Unit= {
+  def withInitiatedDb[A](initialization:DBIO[A]*)(op: Database => Unit): Unit= {
     val cfg = ConfigFactory.load("db/appslick")
     val db = Database.forConfig("slickdbconf1", cfg)
 
