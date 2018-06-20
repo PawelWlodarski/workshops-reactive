@@ -21,7 +21,7 @@ object SlickStreaming extends DatabaseOperations{
 
   def main(args: Array[String]): Unit = {
     simpleStreamExample()
-//    simpleStreamExample()
+//    materializedValue()
 //    streamingFromSlick()
 //    asyncAndThreads()
 
@@ -38,6 +38,28 @@ object SlickStreaming extends DatabaseOperations{
   lazy val coffees = TableQuery[CoffeesWithId]
 
   private def simpleStreamExample() = {
+    val source = Source(1 to 100)
+
+    val flow = Flow[Int].map(_ + 1)
+
+    val sink = Sink.foreach { input: Int =>
+      println(s"procesing $input in thread ${Thread.currentThread().getName}")
+    }
+
+
+    val stream: RunnableGraph[NotUsed] = source.via(flow).to(sink)
+
+
+    ///this part can be decoupled easily
+    val system = ActorSystem("slickstream1")
+    val materializer = ActorMaterializer()(system)
+
+    stream.run()(materializer)
+
+    system.terminate()
+  }
+
+  private def materializedValue() = {
     val source = Source(1 to 10)
 
     val flow = Flow[Int].map(_ + 1)
@@ -60,27 +82,7 @@ object SlickStreaming extends DatabaseOperations{
     system.terminate()
   }
 
-  private def materializedValue() = {
-    val source = Source(1 to 100)
 
-    val flow = Flow[Int].map(_ + 1)
-
-    val sink = Sink.foreach { input: Int =>
-      println(s"procesing $input in thread ${Thread.currentThread().getName}")
-    }
-
-
-    val stream: RunnableGraph[NotUsed] = source.via(flow).to(sink)
-
-
-    ///this part can be decoupled easily
-    val system = ActorSystem("slickstream1")
-    val materializer = ActorMaterializer()(system)
-
-    stream.run()(materializer)
-
-    system.terminate()
-  }
 
   private def streamingFromSlick() = {
     withInitiatedDb(coffees.schema.create) { db =>
